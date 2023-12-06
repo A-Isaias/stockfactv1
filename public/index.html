@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="/css/index.css" />
+    <title>Stock y Facturación</title>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h1 class="mb-4">Stock y Facturación</h1>
+      <a href="#" onclick="cargarProductos()">Nuevo Producto</a>
+      <a href="#" onclick="verStock()">Todos los Productos</a>
+      <a href="#" onclick="borrarProducto()">Borrar Producto</a>
+      <a href="#" onclick="facturar()">Facturar</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content container mt-5">
+      <!-- <h1 class="mb-4">Stock y Facturación</h1> -->
+
+      <!-- Buscar Productos -->
+      <div class="card mb-4">
+        <div class="card-header">Buscar Productos</div>
+        <div class="card-body">
+          <form id="buscar-productos-form">
+            <div class="form-row align-items-center">
+              <!-- Campo ID -->
+              <div class="form-group col-md-3">
+                <label for="searchId">ID:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="searchId"
+                  autofocus
+                />
+              </div>
+              <!-- Campo Descripción -->
+              <div class="form-group col-md-6">
+                <label for="searchDescription">Descripción:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="searchDescription"
+                />
+              </div>
+              <!-- Botón de Buscar -->
+              <div class="form-group col-md-3 text-center mt-2">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-block"
+                  onclick="buscarProductos()"
+                >
+                  Buscar Productos
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Ver Stock -->
+      <div class="card mb-4 mt-4">
+        <div class="card-header">Resultados de la Búsqueda</div>
+        <div class="card-body" id="stock-container">
+          <!-- <button class="btn btn-primary" onclick="verStock()">Ver Stock</button> -->
+          <table class="table mt-3">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Costo</th>
+                <th>IVA</th>
+                <th>Lista 1</th>
+                <th>Lista 2</th>
+                <th>Lista 3</th>
+                <th>Lista 4</th>
+              </tr>
+            </thead>
+            <tbody id="stock-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Alta/Modificar Producto -->
+      <div class="card mb-4">
+        <div class="card-header">Acciones</div>
+        <div class="card-body">
+          <form id="producto-form">
+            <!-- Agrega los campos necesarios para dar de alta/modificar productos -->
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="volverArriba()"
+            >
+              Volver Arriba
+            </button>
+            <!-- <button type="button" class="btn btn-primary" onclick="cargarProductos()">Cargar Productos</button> -->
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="borrarProducto()"
+            >
+              Borrar Producto
+            </button>
+            <button type="button" class="btn btn-success" onclick="facturar()">
+              Facturar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Incluye el script de index.js -->
+    <script src="/js/index.js"></script>
+    <script src="/js/search.js"></script>
+
+    <script>
+      // Este script para manejar el evento submit del formulario
+      document
+        .getElementById("buscar-productos-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Evita el envío convencional del formulario
+          buscarProductos(); // Ejecuta la búsqueda
+        });
+    </script>
+    <script>
+      // Este script para manejar el evento submit del formulario
+      document
+        .getElementById("buscar-productos-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Evita el envío convencional del formulario
+          buscarProductos(); // Ejecuta la búsqueda
+        });
+
+      // Escucha el evento keydown en los campos de texto
+      document
+        .getElementById("searchId")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            buscarProductos();
+          }
+        });
+
+      document
+        .getElementById("searchDescription")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            buscarProductos();
+          }
+        });
+    </script>
+  </body>
+</html>

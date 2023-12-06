@@ -1,0 +1,65 @@
+<!-- alta.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Alta/Modificar Producto</title>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Alta/Modificar Producto</h1>
+
+  <form id="producto-form">
+    <div class="form-group">
+      <label for="nombre">Nombre:</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+
+    <div class="form-group">
+      <label for="costo">Costo:</label>
+      <input type="number" class="form-control" id="costo" name="costo" required>
+    </div>
+
+    <div class="form-group">
+      <label for="iva">IVA:</label>
+      <input type="number" class="form-control" id="iva" name="iva" required>
+    </div>
+
+    <div class="form-group">
+      <label for="precioLista1">Precio Lista 1:</label>
+      <input type="number" class="form-control" id="precioLista1" name="precioLista1" required>
+    </div>
+
+    <div class="form-group">
+      <label for="precioLista2">Precio Lista 2:</label>
+      <input type="number" class="form-control" id="precioLista2" name="precioLista2" required>
+    </div>
+
+    <div class="form-group">
+      <label for="precioLista3">Precio Lista 3:</label>
+      <input type="number" class="form-control" id="precioLista3" name="precioLista3" required>
+    </div>
+
+    <div class="form-group">
+      <label for="precioLista4">Precio Lista 4:</label>
+      <input type="number" class="form-control" id="precioLista4" name="precioLista4" required>
+    </div>
+
+    <button type="button" class="btn btn-primary" onclick="guardarProducto()">Guardar Producto</button>
+  </form>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+
+<!-- Incluye el script de index.js -->
+<script src="/js/index.js"></script>
+
+</body>
+</html>

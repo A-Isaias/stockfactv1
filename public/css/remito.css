@@ -1,0 +1,45 @@
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 800px;
+}
+
+/* Estilos del formulario */
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* Estilos de la tabla */
+.table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Estilos de los botones */
+.btn {
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+/* Estilos del total de la factura */
+#total {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: green;
+}

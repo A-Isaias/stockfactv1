@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/css/remito.css" />
+    <title>Remito</title>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h1 class="mb-4">Remito</h1>
+      <a href="#" onclick="abrirBusquedaProductos()">Buscar Productos</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content container mt-5">
+      <!-- Formulario de Remito -->
+      <div class="card mb-4">
+        <div class="card-header">Remito</div>
+        <div class="card-body">
+          <form id="remito-form">
+            <!-- Campos del formulario de remito -->
+            <div class="form-row align-items-center">
+              <div class="form-group col-md-2">
+                <label for="cantidad">Cantidad:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cantidad"
+                  required
+                />
+              </div>
+              <div class="form-group col-md-2">
+                <label for="codigo">Código:</label>
+                <input type="text" class="form-control" id="codigo" required />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="producto">Producto:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="producto"
+                  readonly
+                />
+              </div>
+              <div class="form-group col-md-2">
+                <label for="precioUnitario">Precio Unitario:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="precioUnitario"
+                  readonly
+                />
+              </div>
+              <div class="form-group col-md-2">
+                <label for="precioTotal">Subtotal:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="precioTotal"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <!-- Tabla de ítems -->
+<div class="table-responsive mt-3">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="remito-table-body">
+        <!-- Fila inicial -->
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Botones de acciones -->
+  <div class="mt-3">
+    <button type="button" class="btn btn-primary" onclick="agregarItem()">Agregar Item</button>
+    <button type="button" class="btn btn-danger" onclick="borrarItem()">Borrar Último Item</button>
+    <button type="button" class="btn btn-warning" onclick="cancelarCompra()">Cancelar Compra</button>
+    <button type="button" class="btn btn-success" onclick="confirmarCompra()">Confirmar Compra</button>
+    <button type="button" class="btn btn-secondary" id="agregarFila">Agregar Fila</button>
+  </div>
+  
+  <!-- Total de la compra -->
+  <div class="mt-3">
+    <strong>Total:</strong> <span id="total">0.00</span>
+  </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ventana de búsqueda de productos (puede ser un modal) -->
+    <div class="modal" id="busquedaProductosModal">
+      <!-- Contenido de la ventana de búsqueda -->
+      <!-- Aquí puedes utilizar el código de búsqueda y listado de productos -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Agrega tu script de remito.js aquí -->
+    <script src="/js/remito.js"></script>
+  </body>
+</html>

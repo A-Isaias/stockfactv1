@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Producto por Nombre</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+</head>
+<body>
+    <h1>Buscar Producto por Nombre</h1>
+    
+    <!-- Contenido de búsqueda por nombre -->
+    <div class="form-group">
+        <label for="searchProductName">Nombre del Producto:</label>
+        <input type="text" class="form-control" id="searchProductName" autofocus onkeydown="handleEnter(event)" />
+    </div>
+
+    <!-- Botón para realizar la búsqueda -->
+    <button type="button" class="btn btn-primary" onclick="buscarProductosPorNombre()">Buscar Producto</button>
+
+    <!-- Resultados de la búsqueda -->
+    <div id="searchResults" class="mt-4">
+        <!-- Aquí se mostrarán los resultados de la búsqueda -->
+    </div>
+
+    <script>
+        function buscarProductosPorNombre() {
+            const searchProductName = document.getElementById('searchProductName').value;
+    
+            fetch(`/search?searchDescription=${searchProductName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al buscar productos por nombre');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    mostrarResultadosBusqueda(data);
+                })
+                .catch(error => {
+                    console.error('Error al buscar productos por nombre: ', error);
+                });
+        }
+    
+        function mostrarResultadosBusqueda(data) {
+            const searchResultsContainer = document.getElementById('searchResults');
+            searchResultsContainer.innerHTML = '';
+    
+            data.forEach(producto => {
+                const resultItem = document.createElement('div');
+                resultItem.innerHTML = `
+                    <p>ID: ${producto.id} - Nombre: ${producto.nombre}</p>
+                    <button class="btn btn-success" onclick="seleccionarProducto(${producto.id}, '${producto.nombre}')">Seleccionar</button>
+                `;
+                searchResultsContainer.appendChild(resultItem);
+            });
+        }
+    
+        function seleccionarProducto(productId, productName) {
+            window.close();
+            window.opener.seleccionarProducto(productId, productName);
+        }
+    
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                buscarProductosPorNombre();
+            }
+        }
+    </script>
+</body>
+</html>

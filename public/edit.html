@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <title>Editar Producto</title>
+</head>
+
+<body>
+
+  <div class="container mt-5">
+    <h1 class="mb-4">Editar Producto</h1>
+
+<!-- Formulario de Edición -->
+<form id="edit-product-form">
+  <!-- Campos comunes, puedes agregar o quitar según tus necesidades -->
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" name="nombre" required>
+
+  <label for="costo">Costo:</label>
+  <input type="number" id="costo" name="costo" step="0.01" required>
+
+  <label for="iva">IVA:</label>
+  <input type="number" id="iva" name="iva" step="0.01" required>
+
+  <label for="precioLista1">Precio Lista 1:</label>
+  <input type="number" id="precioLista1" name="precioLista1" step="0.01" required>
+
+  <label for="precioLista2">Precio Lista 2:</label>
+  <input type="number" id="precioLista2" name="precioLista2" step="0.01" required>
+
+  <label for="precioLista3">Precio Lista 3:</label>
+  <input type="number" id="precioLista3" name="precioLista3" step="0.01" required>
+
+  <label for="precioLista4">Precio Lista 4:</label>
+  <input type="number" id="precioLista4" name="precioLista4" step="0.01" required>
+
+  <!-- Agrega aquí los demás campos para editar, como costo, iva, etc. -->
+
+  <!-- Campo oculto para almacenar el ID del producto -->
+  <input type="hidden" id="idProducto" name="idProducto" value="">
+  
+  <!-- Botón para guardar la edición -->
+  <button type="button" class="btn btn-success" onclick="guardarEdicion()">Guardar Edición</button>
+  <!-- Botón para eliminar el producto -->
+  <button type="button" class="btn btn-danger" onclick="confirmarEliminacion()">Eliminar Producto</button>
+</form>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Incluye el script de index.js -->
+<script src="/js/index.js"></script>
+  <!-- Incluye el script de edit.js -->
+  <script src="/js/edit.js"></script>
+</body>
+
+</html>

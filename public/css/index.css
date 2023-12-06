@@ -1,0 +1,84 @@
+/* Estilo para el sidebar */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    padding-top: 20px;
+  }
+  
+  /* Estilo para los botones del sidebar */
+  .sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    display: block;
+  }
+  
+  .sidebar a:hover {
+    color: #f1f1f1;
+  }
+  
+  /* Estilo para el contenido principal */
+.content {
+  margin-left: 250px; /* Ajustar el margen izquierdo del contenido principal */
+  padding: 16px; /* Reducir el padding del contenido principal */
+  margin-top: 0;
+}
+
+/* Estilo para el título principal */
+.content h1 {
+  font-size: 24px; /* Reducir el tamaño de fuente del título principal */
+  margin-bottom: 10px; /* Ajustar el margen inferior del título principal */
+  margin-top: 0;
+}
+
+/* Estilo para los títulos de las secciones */
+.card-header {
+  font-size: 18px; /* Reducir el tamaño de fuente de los títulos de las secciones */
+}
+
+/* Estilo para los formularios */
+.card-body form {
+  font-size: 14px; /* Reducir el tamaño de fuente de los formularios */
+}
+
+/* Estilo para los botones de los formularios */
+.btn {
+  font-size: 14px; /* Reducir el tamaño de fuente de los botones */
+  padding: 6px 12px; /* Reducir el padding de los botones */
+}
+/* Estilo para el botón de volver arriba */
+#btnVolverArriba {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+}
+/* Estilo para el formulario de búsqueda */
+.card-body form {
+  font-size: 14px; /* Reducir el tamaño de fuente del formulario */
+  max-height: 80px; /* Establecer una altura máxima para el formulario */
+  overflow: hidden; /* Ocultar cualquier contenido que supere la altura máxima */
+}
+
+/* Agregar un margen inferior para separar el formulario del resto del contenido */
+.card-body {
+  margin-bottom: 0px;
+}
+
+/* Estilo para el botón de buscar */
+.btn-primary {
+  margin-top: 18px; /* Agregar un margen superior al botón de buscar */
+  padding: 9px 20px; /* Ajusta el padding para hacer el botón más grande */
+}
+
+
+/* Estilo para el resultado de la búsqueda */
+#stock-container {
+  margin-top: 20px; /* Agregar un margen superior al contenedor de resultados */
+}
