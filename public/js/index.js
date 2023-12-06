@@ -191,7 +191,6 @@ function guardarEdicion() {
     })
     .then(producto => {
       // Muestra los detalles del producto en el formulario de edición
-      // (asumo que los campos en el formulario tienen los mismos IDs que los campos del producto)
       document.getElementById('nombre').value = producto.nombre;
       document.getElementById('costo').value = producto.costo;
       document.getElementById('iva').value = producto.iva;
