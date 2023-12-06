@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path'); // Importa el módulo 'path' de Node.js
+const path = require('path'); 
 const mysql = require('mysql');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
@@ -54,7 +55,8 @@ db.connect((err) => {
       precioLista2 DECIMAL(10, 2) NOT NULL,
       precioLista3 DECIMAL(10, 2) NOT NULL,
       precioLista4 DECIMAL(10, 2) NOT NULL,
-      stock INT NOT NULL
+      stock INT NOT NULL,
+      costoDolar DECIMAL(10, 2) NOT NULL
     )
   `, (err) => {
     if (err) {
@@ -242,6 +244,43 @@ app.get('/edit', (req, res) => {
   });
 });
 
+// Ruta para obtener la configuración
+app.get('/configuracion', (req, res) => {
+  // Utiliza path.join para construir la ruta completa al archivo de configuración
+  const configFilePath = path.join(__dirname, 'public', 'config', 'configuracion.json');
+
+  // Leer el archivo de configuración y enviarlo como respuesta
+  fs.readFile(configFilePath, 'utf8', (err, data) => {
+      if (err) {
+          console.error('Error al leer el archivo de configuración: ', err.message);
+          res.status(500).json({ error: 'Error al obtener la configuración' });
+          return;
+      }
+
+      const configuracion = JSON.parse(data);
+      res.json(configuracion);
+  });
+});
+
+// Ruta para guardar la configuración
+app.put('/configuracion', (req, res) => {
+  const nuevaConfiguracion = req.body;
+
+  // Utiliza path.join para construir la ruta completa al archivo de configuración
+  const configFilePath = path.join(__dirname, 'public', 'config', 'configuracion.json');
+
+  // Escribir la nueva configuración en el archivo
+  fs.writeFile(configFilePath, JSON.stringify(nuevaConfiguracion), (err) => {
+      if (err) {
+          console.error('Error al guardar el archivo de configuración: ', err.message);
+          res.status(500).json({ error: 'Error al guardar la configuración' });
+          return;
+      }
+
+      console.log('Configuración guardada correctamente');
+      res.status(200).json({ message: 'Configuración guardada correctamente' });
+  });
+});
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
