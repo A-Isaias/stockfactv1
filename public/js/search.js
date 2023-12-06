@@ -35,7 +35,8 @@ function buscarProductos() {
         <td>${producto.precioLista1}</td>
         <td>${producto.precioLista2}</td>
         <td>${producto.precioLista3}</td>
-        <td>${producto.precioLista4}</td>
+        
+        <td>${producto.stock}</td>
         <td><button class="btn btn-info" onclick="editarProducto(${producto.id})">Editar</button></td>
       `;
       stockTableBody.appendChild(row);
