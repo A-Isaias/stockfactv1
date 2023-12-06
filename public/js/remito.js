@@ -99,7 +99,7 @@ document.addEventListener('keydown', function (event) {
   function abrirBusquedaProductos(event) {
     if (event.key === "Enter") {
         // Se presionó Enter, abrir la ventana de búsqueda por nombre
-        const searchWindow = window.open('/buscarProducto.html', 'Buscar Producto', 'width=600,height=400');
+        const searchWindow = window.open('/buscarProducto.html', 'Buscar Producto', 'width=800,height=600');
         searchWindow.focus();
     }
 }

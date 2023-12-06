@@ -1,0 +1,23 @@
+/* buscarProducto.css */
+
+.search-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Agrega la clase 'd-flex' para utilizar flexbox */
+.search-result-item button {
+    /* Elimina el margen izquierdo para que el botón esté más cerca del texto */
+    margin-left: 0;
+}
+
+/* Estilo adicional para el botón dentro del resultado de búsqueda */
+.search-result-item button.btn {
+    /* Agrega margen a la derecha del botón para separarlo del texto */
+    margin-left: 10px;
+}
+/* * {
+    background-color: red;
+} */
