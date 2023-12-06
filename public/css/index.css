@@ -20,9 +20,13 @@
   }
   
   .sidebar a:hover {
-    color: #f1f1f1;
+    color: darkcyan;
   }
-  
+  /* Estilo para el título en el sidebar */
+.sidebar h1 {
+  color: darkcyan; /* Cambiar el color del texto a blanco */
+  margin-bottom: 20px; /* Ajustar el margen inferior del título en el sidebar */
+}
   /* Estilo para el contenido principal */
 .content {
   margin-left: 250px; /* Ajustar el margen izquierdo del contenido principal */
