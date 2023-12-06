@@ -1,5 +1,18 @@
 let itemsFactura = [];
 
+function confirmarFactura() {
+    console.log('Factura confirmada:', itemsFactura);
+    // Aquí puedes enviar los datos al servidor o realizar otras acciones
+
+    // Imprimir la factura
+    imprimirFactura();
+}
+
+function imprimirFactura() {
+    // Abre el cuadro de diálogo de impresión
+    window.print();
+}
+
 function borrarItem() {
     // Verifica si hay elementos en el arreglo
     if (itemsFactura.length > 0) {
