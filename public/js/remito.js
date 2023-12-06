@@ -1,5 +1,34 @@
+let itemsFactura = [];
+
+function borrarItem() {
+    // Verifica si hay elementos en el arreglo
+    if (itemsFactura.length > 0) {
+        // Elimina el último elemento del arreglo
+        itemsFactura.pop();
+
+        // Elimina la última fila de la tabla
+        const facturaTableBody = document.getElementById('remito-table-body');
+        facturaTableBody.removeChild(facturaTableBody.lastChild);
+
+        // Vuelve a calcular el total después de borrar el último item
+        calcularTotal();
+
+        // Actualiza visualmente el total en el formulario
+        actualizarTotalEnFormulario();
+    }
+}
+
+function calcularTotal() {
+    const total = itemsFactura.reduce((acc, item) => acc + item.subtotal, 0);
+    document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function actualizarTotalEnFormulario() {
+    // Esta función ahora simplemente actualiza el total visualmente en el formulario
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
-  const itemsFactura = [];
   const agregarFilaBtn = document.getElementById('agregarFila');
   agregarFilaBtn.addEventListener('click', agregarFila);
 
@@ -91,11 +120,7 @@ function abrirBusquedaProductos() {
   searchWindow.focus();
 }
 
-  function borrarItem() {
-      itemsFactura.pop();
-      actualizarTablaItems();
-      calcularTotal();
-  }
+
 
   function cancelarCompra() {
       itemsFactura.length = 0;
@@ -244,6 +269,8 @@ function seleccionarProducto(productId, productName) {
         });
 }
 
+window.borrarItem = borrarItem;
+
 function calcularSubtotal() {
     const cantidad = parseFloat(document.getElementById('cantidad').value) || 0;
     const precioUnitario = parseFloat(document.getElementById('precioUnitario').value) || 0;
@@ -261,4 +288,5 @@ document.addEventListener('keydown', function (event) {
       event.preventDefault();
   }
 });
+//hasta aca funciona bien
 //hasta aca funciona bien
