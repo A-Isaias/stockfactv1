@@ -53,7 +53,8 @@ db.connect((err) => {
       precioLista1 DECIMAL(10, 2) NOT NULL,
       precioLista2 DECIMAL(10, 2) NOT NULL,
       precioLista3 DECIMAL(10, 2) NOT NULL,
-      precioLista4 DECIMAL(10, 2) NOT NULL
+      precioLista4 DECIMAL(10, 2) NOT NULL,
+      stock INT NOT NULL
     )
   `, (err) => {
     if (err) {
@@ -66,12 +67,12 @@ db.connect((err) => {
 
 // Ruta para agregar un nuevo producto
 app.post('/producto', (req, res) => {
-  const { nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4 } = req.body;
+  const { nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock } = req.body;
 
   console.log('Datos recibidos del formulario:', req.body); // Agrega este console.log para imprimir los datos recibidos
 
-  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4];
+  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock];
 
   db.query(sql, values, (err, result) => {
     if (err) {
@@ -136,12 +137,13 @@ app.put('/producto/:id', (req, res) => {
       res.status(404).json({ error: 'El producto no existe' });
     } else {
       // El producto existe, proceder a actualizarlo
-      const { nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4 } = req.body;
+      const { nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock } = req.body;
 
       // Realizar la actualización en la base de datos
       db.query(
-        'UPDATE productos SET nombre=?, costo=?, iva=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
-        [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, productId],
+        'UPDATE productos SET nombre=?, costo=?, iva=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=?, stock=? WHERE id=?',
+        [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, productId],
+
         (err, result) => {
           if (err) {
             console.error('Error al editar el producto: ' + err.message);

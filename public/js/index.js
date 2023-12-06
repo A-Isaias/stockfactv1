@@ -106,6 +106,7 @@ function buscarProductos() {
           <td>${producto.precioLista2}</td>
           <td>${producto.precioLista3}</td>
           <td>${producto.precioLista4}</td>
+          <td>${producto.stock}</td>
         `;
         stockTableBody.appendChild(row);
       });
@@ -114,8 +115,6 @@ function buscarProductos() {
       console.error('Error al obtener productos: ', error);
     });
 }
-
-// Resto del código...
 
 // Lógica para cargar productos
 function cargarProductos() {
@@ -140,6 +139,7 @@ function guardarProducto() {
       precioLista2: formData.get('precioLista2'),
       precioLista3: formData.get('precioLista3'),
       precioLista4: formData.get('precioLista4'),
+      stock: formData.get('stock'),
     }),
   })
     .then(response => {
@@ -199,6 +199,8 @@ function guardarEdicion() {
       document.getElementById('precioLista2').value = producto.precioLista2;
       document.getElementById('precioLista3').value = producto.precioLista3;
       document.getElementById('precioLista4').value = producto.precioLista4;
+      document.getElementById('stock').value = producto.stock;
+      
 
       // Realiza la solicitud para guardar la edición
       fetch(`/producto/${productId}`, {
@@ -214,6 +216,7 @@ function guardarEdicion() {
           precioLista2: formData.get('precioLista2'),
           precioLista3: formData.get('precioLista3'),
           precioLista4: formData.get('precioLista4'),
+          stock: formData.get('stock'),
         }),
       })
         .then(response => {

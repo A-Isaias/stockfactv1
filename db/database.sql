@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS productos (
   precioLista1 DECIMAL(10, 2) NOT NULL,
   precioLista2 DECIMAL(10, 2) NOT NULL,
   precioLista3 DECIMAL(10, 2) NOT NULL,
-  precioLista4 DECIMAL(10, 2) NOT NULL
+  precioLista4 DECIMAL(10, 2) NOT NULL,
+  stock INT DEFAULT 0;
 );
 
 
