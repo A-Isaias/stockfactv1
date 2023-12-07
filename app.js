@@ -67,7 +67,8 @@ db.connect((err) => {
   });
 });
 
-// Agrega esta función en tu código para cargar la configuración
+
+// función  para cargar la configuración
 function obtenerConfiguracion() {
 
   const configuracionPath = path.join(__dirname, 'public', 'config', 'configuracion.json');
@@ -222,53 +223,61 @@ app.put('/producto/:id', (req, res) => {
   });
 });
 
-// Ruta para actualizar precios de listas al modificar el precio del dólar
+// Ruta para actualizar los precios de las listas
 app.put('/actualizar-precios-listas', (req, res) => {
-  // Obtén el nuevo valor del dólar desde la solicitud
-  const nuevoValorDolar = req.body.valorDolar;
+    const { valorDolar } = req.body;
 
-  // Obtén los productos de la base de datos
-  db.query('SELECT * FROM productos', (err, productos) => {
-    if (err) {
-      console.error('Error al obtener productos: ' + err.message);
-      res.status(500).json({ error: 'Error al obtener productos' });
-      return;
-    }
+    // Obtén los valores de configuración del JSON
+    const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
 
-    // Itera sobre los productos y actualiza los precios de lista
-    productos.forEach(producto => {
-      const { costo, iva, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = producto;
+    const { gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
 
-      // Calcula el costo en dólares
-      const costoDolar = parseFloat(costo) / nuevoValorDolar;
-
-      // Calcula los precios de lista en dólares
-      const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
-      const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
-      const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
-      const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
-
-      // Convierte los precios de dólares a pesos
-      const precioLista1 = precioLista1Dolar * nuevoValorDolar;
-      const precioLista2 = precioLista2Dolar * nuevoValorDolar;
-      const precioLista3 = precioLista3Dolar * nuevoValorDolar;
-      const precioLista4 = precioLista4Dolar * nuevoValorDolar;
-
-      // Actualiza los precios en la base de datos
-      db.query(
-        'UPDATE productos SET costoDolar=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
-        [costoDolar, precioLista1, precioLista2, precioLista3, precioLista4, producto.id],
-        (err, result) => {
-          if (err) {
-            console.error('Error al actualizar precios del producto ' + producto.id + ': ' + err.message);
-          }
+    // Realiza una consulta para obtener todos los productos
+    db.query('SELECT * FROM productos', (err, results) => {
+        if (err) {
+            console.error('Error al obtener productos: ' + err.message);
+            res.status(500).json({ error: 'Error al obtener productos' });
+            return;
         }
-      );
-    });
 
-    res.status(200).json({ message: 'Precios actualizados correctamente' });
-  });
+        // Itera sobre los resultados y actualiza los precios de cada producto
+        results.forEach(producto => {
+            const { id, costo, iva, stock } = producto;
+
+            // Calcula el costo en dólares
+            const costoDolar = parseFloat(costo) / valorDolar;
+
+            // Calcula el nuevo costo en pesos
+            const costoPesos = parseFloat(costo) * valorDolar;
+
+            // Calcula los precios de lista en dólares
+            const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+            const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+            const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+            const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+
+            // Convierte los precios de dólares a pesos
+            const precioLista1 = precioLista1Dolar * valorDolar;
+            const precioLista2 = precioLista2Dolar * valorDolar;
+            const precioLista3 = precioLista3Dolar * valorDolar;
+            const precioLista4 = precioLista4Dolar * valorDolar;
+
+            // Actualiza el costo y los precios en la base de datos
+            db.query(
+                'UPDATE productos SET costo=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
+                [costoPesos, precioLista1, precioLista2, precioLista3, precioLista4, id],
+                (err, result) => {
+                    if (err) {
+                        console.error('Error al actualizar precios del producto con ID ' + id + ': ' + err.message);
+                    }
+                }
+            );
+        });
+
+        res.status(200).json({ message: 'Precios actualizados correctamente' });
+    });
 });
+
 
 // Ruta para borrar un producto por ID
 app.delete('/producto/:id', (req, res) => {
