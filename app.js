@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path'); // Importa el módulo 'path' de Node.js
+const path = require('path'); 
 const mysql = require('mysql');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
@@ -54,7 +55,8 @@ db.connect((err) => {
       precioLista2 DECIMAL(10, 2) NOT NULL,
       precioLista3 DECIMAL(10, 2) NOT NULL,
       precioLista4 DECIMAL(10, 2) NOT NULL,
-      stock INT NOT NULL
+      stock INT NOT NULL,
+      costoDolar DECIMAL(10, 2) NOT NULL
     )
   `, (err) => {
     if (err) {
@@ -65,24 +67,60 @@ db.connect((err) => {
   });
 });
 
+
+// función  para cargar la configuración
+function obtenerConfiguracion() {
+
+  const configuracionPath = path.join(__dirname, 'public', 'config', 'configuracion.json');
+
+  try {
+      const configuracion = require(configuracionPath);
+      return configuracion;
+  } catch (error) {
+      console.error('Error al cargar la configuración: ', error);
+      return {};
+  }
+}
+
 // Ruta para agregar un nuevo producto
 app.post('/producto', (req, res) => {
-  const { nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock } = req.body;
+  const { nombre, costo, iva, stock } = req.body;
 
-  console.log('Datos recibidos del formulario:', req.body); // Agrega este console.log para imprimir los datos recibidos
+ // Obtén los valores de configuración del JSON
+const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
 
-  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock];
+const { valorDolar, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+
+// Calcula el costo en dólares
+const costoDolar = parseFloat(costo) / valorDolar;
+
+// Calcula los precios de lista en dólares
+const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+
+// Convierte los precios de dólares a pesos
+const precioLista1 = precioLista1Dolar * valorDolar;
+const precioLista2 = precioLista2Dolar * valorDolar;
+const precioLista3 = precioLista3Dolar * valorDolar;
+const precioLista4 = precioLista4Dolar * valorDolar;
+
+// Ahora puedes usar costoDolar y los precios en pesos para guardar en la base de datos
+
+  // Realiza la inserción en la base de datos con los nuevos valores
+  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar];
 
   db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error al insertar el producto: ' + err.message);
-      res.status(500).send('Error al insertar el producto: ' + err.message); // Agrega el mensaje de error al cliente
-      return;
-    }
+      if (err) {
+          console.error('Error al insertar el producto: ' + err.message);
+          res.status(500).send('Error al insertar el producto: ' + err.message);
+          return;
+      }
 
-    console.log('Producto agregado correctamente:', result); // Agrega este console.log para imprimir información sobre el éxito
-    res.status(201).send('Producto agregado correctamente');
+      console.log('Producto agregado correctamente:', result);
+      res.status(201).send('Producto agregado correctamente');
   });
 });
 // Ruta para obtener todos los productos
@@ -120,7 +158,7 @@ app.get('/producto/:id', (req, res) => {
   });
 });
 
-// Ruta para editar un producto por ID
+/// Ruta para editar un producto por ID
 app.put('/producto/:id', (req, res) => {
   const productId = req.params.id;
 
@@ -137,12 +175,39 @@ app.put('/producto/:id', (req, res) => {
       res.status(404).json({ error: 'El producto no existe' });
     } else {
       // El producto existe, proceder a actualizarlo
-      const { nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock } = req.body;
+      const { nombre, costo, iva, stock } = req.body;
+
+      // Obtén los valores de configuración del JSON
+      const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
+
+      const { valorDolar, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+
+      // Calcula el costo en dólares
+      const costoDolar = parseFloat(costo) / valorDolar;
+
+      // Calcula los precios de lista en dólares
+      const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+      const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+      const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+      const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+
+      // Convierte los precios de dólares a pesos
+      const precioLista1 = precioLista1Dolar * valorDolar;
+      const precioLista2 = precioLista2Dolar * valorDolar;
+      const precioLista3 = precioLista3Dolar * valorDolar;
+      const precioLista4 = precioLista4Dolar * valorDolar;
+
+      // Aquí puedes agregar los console.log
+      console.log('costoDolar:', costoDolar);
+      console.log('precioLista1:', precioLista1);
+      console.log('precioLista2:', precioLista2);
+      console.log('precioLista3:', precioLista3);
+      console.log('precioLista4:', precioLista4);
 
       // Realizar la actualización en la base de datos
       db.query(
-        'UPDATE productos SET nombre=?, costo=?, iva=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=?, stock=? WHERE id=?',
-        [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, productId],
+        'UPDATE productos SET nombre=?, costo=?, iva=?, costoDolar=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=?, stock=? WHERE id=?',
+        [nombre, costo, iva, costoDolar, precioLista1, precioLista2, precioLista3, precioLista4, stock, productId],
 
         (err, result) => {
           if (err) {
@@ -157,6 +222,62 @@ app.put('/producto/:id', (req, res) => {
     }
   });
 });
+
+// Ruta para actualizar los precios de las listas
+app.put('/actualizar-precios-listas', (req, res) => {
+    const { valorDolar } = req.body;
+
+    // Obtén los valores de configuración del JSON
+    const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
+
+    const { gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+
+    // Realiza una consulta para obtener todos los productos
+    db.query('SELECT * FROM productos', (err, results) => {
+        if (err) {
+            console.error('Error al obtener productos: ' + err.message);
+            res.status(500).json({ error: 'Error al obtener productos' });
+            return;
+        }
+
+        // Itera sobre los resultados y actualiza los precios de cada producto
+        results.forEach(producto => {
+            const { id, costo, iva, stock } = producto;
+
+            // Calcula el costo en dólares
+            const costoDolar = parseFloat(costo) / valorDolar;
+
+            // Calcula el nuevo costo en pesos
+            const costoPesos = parseFloat(costo) * valorDolar;
+
+            // Calcula los precios de lista en dólares
+            const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+            const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+            const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+            const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+
+            // Convierte los precios de dólares a pesos
+            const precioLista1 = precioLista1Dolar * valorDolar;
+            const precioLista2 = precioLista2Dolar * valorDolar;
+            const precioLista3 = precioLista3Dolar * valorDolar;
+            const precioLista4 = precioLista4Dolar * valorDolar;
+
+            // Actualiza el costo y los precios en la base de datos
+            db.query(
+                'UPDATE productos SET costo=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
+                [costoPesos, precioLista1, precioLista2, precioLista3, precioLista4, id],
+                (err, result) => {
+                    if (err) {
+                        console.error('Error al actualizar precios del producto con ID ' + id + ': ' + err.message);
+                    }
+                }
+            );
+        });
+
+        res.status(200).json({ message: 'Precios actualizados correctamente' });
+    });
+});
+
 
 // Ruta para borrar un producto por ID
 app.delete('/producto/:id', (req, res) => {
@@ -242,6 +363,43 @@ app.get('/edit', (req, res) => {
   });
 });
 
+// Ruta para obtener la configuración
+app.get('/configuracion', (req, res) => {
+  // Utiliza path.join para construir la ruta completa al archivo de configuración
+  const configFilePath = path.join(__dirname, 'public', 'config', 'configuracion.json');
+
+  // Leer el archivo de configuración y enviarlo como respuesta
+  fs.readFile(configFilePath, 'utf8', (err, data) => {
+      if (err) {
+          console.error('Error al leer el archivo de configuración: ', err.message);
+          res.status(500).json({ error: 'Error al obtener la configuración' });
+          return;
+      }
+
+      const configuracion = JSON.parse(data);
+      res.json(configuracion);
+  });
+});
+
+// Ruta para guardar la configuración
+app.put('/configuracion', (req, res) => {
+  const nuevaConfiguracion = req.body;
+
+  // Utiliza path.join para construir la ruta completa al archivo de configuración
+  const configFilePath = path.join(__dirname, 'public', 'config', 'configuracion.json');
+
+  // Escribir la nueva configuración en el archivo
+  fs.writeFile(configFilePath, JSON.stringify(nuevaConfiguracion), (err) => {
+      if (err) {
+          console.error('Error al guardar el archivo de configuración: ', err.message);
+          res.status(500).json({ error: 'Error al guardar la configuración' });
+          return;
+      }
+
+      console.log('Configuración guardada correctamente');
+      res.status(200).json({ message: 'Configuración guardada correctamente' });
+  });
+});
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
