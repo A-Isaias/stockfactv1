@@ -171,6 +171,9 @@ function guardarProducto() {
 function cargarEdicion() {
   const editWindow = window.open('/edit.html', 'Editar Producto', 'width=600,height=400');
   editWindow.focus();
+
+  // Pasa la función de recarga directamente a la ventana de edición
+  editWindow.recargarPaginaPrincipal = verStock;
 }
 
 function guardarEdicion() {
@@ -273,3 +276,8 @@ function facturar() {
   // Redirige a remito.html
   window.location.href = '/remito.html';
 }
+
+// Este script se ejecutará cuando la página se cargue completamente
+document.addEventListener('DOMContentLoaded', function () {
+  verStock(); // Llama a la función para mostrar todos los productos al cargar la página
+});

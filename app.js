@@ -86,31 +86,32 @@ function obtenerConfiguracion() {
 app.post('/producto', (req, res) => {
   const { nombre, costo, iva, stock } = req.body;
 
- // Obtén los valores de configuración del JSON
-const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
+  // Obtén los valores de configuración del JSON
+  const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
 
-const { valorDolar, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+  const { valorDolar, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
 
-// Calcula el costo en dólares
-const costoDolar = parseFloat(costo) / valorDolar;
+  // Calcula el costo en dólares
+  const costoDolar = parseFloat(costo) / valorDolar;
 
-// Calcula los precios de lista en dólares
-const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
-const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
-const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
-const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+  // Calcula el tipo de cambio del día
+  const cotDolarCompra = valorDolar; // O obtén este valor según tu lógica desde configuracion.json
 
-// Convierte los precios de dólares a pesos
-const precioLista1 = precioLista1Dolar * valorDolar;
-const precioLista2 = precioLista2Dolar * valorDolar;
-const precioLista3 = precioLista3Dolar * valorDolar;
-const precioLista4 = precioLista4Dolar * valorDolar;
+  // Calcula los precios de lista en dólares
+  const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+  const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+  const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+  const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
 
-// Ahora puedes usar costoDolar y los precios en pesos para guardar en la base de datos
+  // Convierte los precios de dólares a pesos
+  const precioLista1 = precioLista1Dolar * valorDolar;
+  const precioLista2 = precioLista2Dolar * valorDolar;
+  const precioLista3 = precioLista3Dolar * valorDolar;
+  const precioLista4 = precioLista4Dolar * valorDolar;
 
   // Realiza la inserción en la base de datos con los nuevos valores
-  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar];
+  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar, cotDolarCompra) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar, cotDolarCompra];
 
   db.query(sql, values, (err, result) => {
       if (err) {
@@ -123,6 +124,7 @@ const precioLista4 = precioLista4Dolar * valorDolar;
       res.status(201).send('Producto agregado correctamente');
   });
 });
+
 // Ruta para obtener todos los productos
 app.get('/productos', (req, res) => {
   db.query('SELECT * FROM productos', (err, results) => {
