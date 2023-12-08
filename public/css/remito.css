@@ -43,3 +43,11 @@ body {
   font-size: 1.2rem;
   color: green;
 }
+
+.sidebar a:hover {
+  color: darkcyan;
+}
+
+.sidebar h1 {
+  color: darkcyan;
+}

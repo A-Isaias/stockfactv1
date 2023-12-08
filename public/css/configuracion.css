@@ -20,8 +20,13 @@
   }
   
   .sidebar a:hover {
-    color: #f1f1f1;
+    color: darkcyan;
   }
+
+  .sidebar h1 {
+    color: darkcyan;
+  }
+  
   
   /* Estilo para el contenido principal */
 .content {
