@@ -44,6 +44,27 @@ body {
   color: green;
 }
 
+/* Estilo para el sidebar */
+.sidebar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  padding-top: 20px;
+}
+
+/* Estilo para los botones del sidebar */
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+}
+
 .sidebar a:hover {
   color: darkcyan;
 }

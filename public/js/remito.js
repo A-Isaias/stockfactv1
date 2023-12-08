@@ -1,5 +1,11 @@
 let itemsFactura = [];
 
+// se usa para recargar la pagina"
+function facturar() {
+    // Redirige a remito.html
+    window.location.href = '/remito.html';
+  }
+
 function confirmarFactura() {
     console.log('Factura confirmada:', itemsFactura);
     // Aquí puedes enviar los datos al servidor o realizar otras acciones
@@ -132,7 +138,6 @@ function abrirBusquedaProductos() {
   const searchWindow = window.open('/buscarProducto.html', 'Buscar Producto', 'width=600,height=400');
   searchWindow.focus();
 }
-
 
 
   function cancelarCompra() {
