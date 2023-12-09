@@ -191,8 +191,8 @@ function abrirBusquedaProductos() {
               <td>${item.cantidad}</td>
               <td>${item.codigo}</td>
               <td>${item.producto}</td>
-              <td>${item.precioUnitario}</td>
-              <td>${item.subtotal}</td>
+              <td>$${item.precioUnitario}</td>
+              <td>$${item.subtotal}</td>
           `;
 
           facturaTableBody.appendChild(row);
