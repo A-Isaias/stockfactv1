@@ -50,20 +50,32 @@ function calcularTotal() {
 function actualizarTotalEnFormulario() {
     // Esta función ahora simplemente actualiza el total visualmente en el formulario
 }
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Carga los datos del archivo js/datos.json
-    fetch('/config/datos.json')
-      .then(response => response.json())
-      .then(datos => {
+    // Llamada a la función para cargar la configuración y los datos de la empresa al cargar la página
+   cargarDatosEmpresa();
+});
+
+function cargarDatosEmpresa() {
+    // Realiza una solicitud para cargar datos directamente desde datos.json
+    fetch('/config/datos.json')  // Ajusta la ruta según tu estructura de archivos
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de la empresa');
+            }
+            return response.json();
+        })
+        .then(datosEmpresa => {
+        console.log(datosEmpresa);
         // Actualiza los elementos del encabezado con los datos cargados
-        document.getElementById('nombreEmpresa').innerText = datos.datosEmpresa.estNombre;
-        document.getElementById('cuitEmpresa').innerText = 'CUIT: ' + datos.datosEmpresa.estCuit;
-        document.getElementById('condicionIvaEmpresa').innerText = 'Condición IVA: ' + datos.datosEmpresa.estCondicionIVA;
-        document.getElementById('direccionEmpresa').innerText = 'Dirección: ' + datos.datosEmpresa.estDireccion;
+        document.getElementById('nombreEmpresa').innerText = datosEmpresa.estNombre;
+        document.getElementById('cuitEmpresa').innerText = 'CUIT: ' + datosEmpresa.estCuit;
+        document.getElementById('condicionIvaEmpresa').innerText = 'Condición IVA: ' + datosEmpresa.estCondicionIVA;
+        document.getElementById('direccionEmpresa').innerText = 'Dirección: ' + datosEmpresa.estDireccion;
       })
       .catch(error => console.error('Error al cargar datos del archivo datos.json:', error));
   
-  });
+  };
 
 document.addEventListener('DOMContentLoaded', function () {
   const agregarFilaBtn = document.getElementById('agregarFila');

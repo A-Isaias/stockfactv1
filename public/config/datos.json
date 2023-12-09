@@ -1,9 +1,1 @@
-{
-    "datosEmpresa": {
-      "estNombre": "SUPERMERCADO PEDRO",
-      "estCuit": "202020202020",
-      "estCondicionIVA": "Responsable Inscripto",
-      "estDireccion": "Segurola y Habana 4310 7mo piso"
-    }
-    
-  }
+{"estNombre":"SUPERMERCADO PEDRO","estCuit":"12","estCondicionIVA":"Responsable Inscripto","estDireccion":"Segurola y Habana 4310 7mo piso"}

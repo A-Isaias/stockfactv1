@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarDatosEmpresa();
 });
 
-// Nueva función para cargar la configuración de la empresa
 function cargarDatosEmpresa() {
     // Realiza una solicitud para cargar datos directamente desde datos.json
     fetch('/config/datos.json')  // Ajusta la ruta según tu estructura de archivos
@@ -21,9 +20,8 @@ function cargarDatosEmpresa() {
             }
             return response.json();
         })
-        .then(datos => {
+        .then(datosEmpresa => {
             // Actualiza los campos del formulario con los datos de la empresa obtenidos
-            const datosEmpresa = datos.datosEmpresa;
             console.log('Datos de la empresa obtenidos:', datosEmpresa);
             document.getElementById('nombreEmpresa').value = datosEmpresa.estNombre;
             document.getElementById('cuitEmpresa').value = datosEmpresa.estCuit;
@@ -52,12 +50,12 @@ function guardarDatosEmpresa() {
     };
 
     // Realiza una solicitud al servidor para guardar los nuevos datos de la empresa
-    fetch('/config/datos.json', {  // Ajusta la ruta según tu estructura de archivos
+    fetch('/datos-empresa', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ datosEmpresa: nuevosDatosEmpresa }),
+        body: JSON.stringify(nuevosDatosEmpresa),
     })
         .then(response => {
             if (!response.ok) {
