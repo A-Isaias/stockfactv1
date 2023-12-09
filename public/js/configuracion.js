@@ -4,87 +4,69 @@ function volverAlInicio() {
     // Redirecciona al inicio
     window.location.href = '/';
 }
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Llamada a la función para cargar la configuración al cargar la página
+    // Llamada a la función para cargar la configuración y los datos de la empresa al cargar la página
     cargarConfiguracion();
+    cargarDatosEmpresa();
 });
 
-function cargarConfiguracion() {
-    // Realiza una solicitud al servidor para obtener la configuración
-    fetch('/configuracion')
+function cargarDatosEmpresa() {
+    // Realiza una solicitud para cargar datos directamente desde datos.json
+    fetch('/config/datos.json')  // Ajusta la ruta según tu estructura de archivos
         .then(response => {
             if (!response.ok) {
-                throw new Error('Error al obtener la configuración');
+                throw new Error('Error al obtener los datos de la empresa');
             }
             return response.json();
         })
-        .then(configuracion => {
-            // Actualiza los campos del formulario con la configuración obtenida
-            document.getElementById('valorDolar').value = configuracion.valorDolar;
-            document.getElementById('gananciaLista1').value = configuracion.gananciaLista1;
-            document.getElementById('gananciaLista2').value = configuracion.gananciaLista2;
-            document.getElementById('gananciaLista3').value = configuracion.gananciaLista3;
-            document.getElementById('gananciaLista4').value = configuracion.gananciaLista4;
+        .then(datosEmpresa => {
+            // Actualiza los campos del formulario con los datos de la empresa obtenidos
+            console.log('Datos de la empresa obtenidos:', datosEmpresa);
+            document.getElementById('nombreEmpresa').value = datosEmpresa.estNombre;
+            document.getElementById('cuitEmpresa').value = datosEmpresa.estCuit;
+            document.getElementById('condicionIvaEmpresa').value = datosEmpresa.estCondicionIVA;
+            document.getElementById('direccionEmpresa').value = datosEmpresa.estDireccion;
         })
         .catch(error => {
-            console.error('Error al obtener la configuración: ', error);
+            console.error('Error al obtener los datos de la empresa: ', error);
         });
 }
 
-function guardarConfiguracion() {
-    // Obtén los valores del formulario
-    const valorDolar = parseFloat(document.getElementById('valorDolar').value) || 0.0;
-    const gananciaLista1 = parseFloat(document.getElementById('gananciaLista1').value) || 0.0;
-    const gananciaLista2 = parseFloat(document.getElementById('gananciaLista2').value) || 0.0;
-    const gananciaLista3 = parseFloat(document.getElementById('gananciaLista3').value) || 0.0;
-    const gananciaLista4 = parseFloat(document.getElementById('gananciaLista4').value) || 0.0;
+// Nueva función para guardar los datos de la empresa
+function guardarDatosEmpresa() {
+    // Obtén los nuevos valores del formulario
+    const nombreEmpresa = document.getElementById('nombreEmpresa').value;
+    const cuitEmpresa = document.getElementById('cuitEmpresa').value;
+    const condicionIvaEmpresa = document.getElementById('condicionIvaEmpresa').value;
+    const direccionEmpresa = document.getElementById('direccionEmpresa').value;
 
-    // Crea un objeto con la nueva configuración
-    const nuevaConfiguracion = {
-        valorDolar,
-        gananciaLista1,
-        gananciaLista2,
-        gananciaLista3,
-        gananciaLista4
+    // Crea un objeto con los nuevos datos de la empresa
+    const nuevosDatosEmpresa = {
+        estNombre: nombreEmpresa,
+        estCuit: cuitEmpresa,
+        estCondicionIVA: condicionIvaEmpresa,
+        estDireccion: direccionEmpresa
     };
 
-    // Realiza una solicitud al servidor para guardar la nueva configuración
-    fetch('/configuracion', {
+    // Realiza una solicitud al servidor para guardar los nuevos datos de la empresa
+    fetch('/datos-empresa', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(nuevaConfiguracion),
+        body: JSON.stringify(nuevosDatosEmpresa),
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Error al guardar la configuración');
+                throw new Error('Error al guardar los datos de la empresa');
             }
-
-            // Muestra un mensaje de éxito con SweetAlert
-            Swal.fire({
-                icon: 'success',
-                title: '¡Configuración guardada!',
-                text: 'La configuración se ha guardado exitosamente.',
-            });
-
-            console.log('Configuración guardada correctamente');
+            console.log('Datos de la empresa guardados correctamente');
         })
         .catch(error => {
-            console.error('Error al guardar la configuración: ', error);
-
-            // Muestra un mensaje de error con SweetAlert
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Ha ocurrido un error al guardar la configuración.',
-            });
+            console.error('Error al guardar los datos de la empresa: ', error);
         });
 }
-document.addEventListener('DOMContentLoaded', function () {
-    // Llamada a la función para cargar la configuración al cargar la página
-    cargarConfiguracion();
-});
 
 function cargarConfiguracion() {
     // Realiza una solicitud al servidor para obtener la configuración
@@ -141,6 +123,8 @@ function guardarConfiguracion() {
 
             // Después de guardar la configuración, actualiza los precios de las listas
             actualizarPreciosListas(valorDolar); // Pasa el valorDolar a la función
+            // También guarda los datos de la empresa
+            guardarDatosEmpresa();
         })
         .catch(error => {
             console.error('Error al guardar la configuración: ', error);

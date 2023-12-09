@@ -1,5 +1,16 @@
 let itemsFactura = [];
 
+function volverAlInicio() {
+    // Redirecciona al inicio
+    window.location.href = '/';
+}
+
+// se usa para recargar la pagina
+function facturar() {
+    // Redirige a remito.html
+    window.location.href = '/remito.html';
+  }
+
 function confirmarFactura() {
     console.log('Factura confirmada:', itemsFactura);
     // Aquí puedes enviar los datos al servidor o realizar otras acciones
@@ -40,6 +51,31 @@ function actualizarTotalEnFormulario() {
     // Esta función ahora simplemente actualiza el total visualmente en el formulario
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Llamada a la función para cargar la configuración y los datos de la empresa al cargar la página
+   cargarDatosEmpresa();
+});
+
+function cargarDatosEmpresa() {
+    // Realiza una solicitud para cargar datos directamente desde datos.json
+    fetch('/config/datos.json')  // Ajusta la ruta según tu estructura de archivos
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de la empresa');
+            }
+            return response.json();
+        })
+        .then(datosEmpresa => {
+        console.log(datosEmpresa);
+        // Actualiza los elementos del encabezado con los datos cargados
+        document.getElementById('nombreEmpresa').innerText = datosEmpresa.estNombre;
+        document.getElementById('cuitEmpresa').innerText = 'CUIT: ' + datosEmpresa.estCuit;
+        document.getElementById('condicionIvaEmpresa').innerText = 'Condición IVA: ' + datosEmpresa.estCondicionIVA;
+        document.getElementById('direccionEmpresa').innerText = 'Dirección: ' + datosEmpresa.estDireccion;
+      })
+      .catch(error => console.error('Error al cargar datos del archivo datos.json:', error));
+  
+  };
 
 document.addEventListener('DOMContentLoaded', function () {
   const agregarFilaBtn = document.getElementById('agregarFila');
@@ -134,7 +170,6 @@ function abrirBusquedaProductos() {
 }
 
 
-
   function cancelarCompra() {
       itemsFactura.length = 0;
       actualizarTablaItems();
@@ -156,8 +191,8 @@ function abrirBusquedaProductos() {
               <td>${item.cantidad}</td>
               <td>${item.codigo}</td>
               <td>${item.producto}</td>
-              <td>${item.precioUnitario}</td>
-              <td>${item.subtotal}</td>
+              <td>$${item.precioUnitario}</td>
+              <td>$${item.subtotal}</td>
           `;
 
           facturaTableBody.appendChild(row);
@@ -211,14 +246,7 @@ codigoInput.addEventListener('keydown', function (event) {
     }
 });
 
-// Lógica para abrir la ventana de búsqueda por nombre
-function abrirBusquedaProductos(event) {
-  if (event.key === "Enter") {
-      // Se presionó Enter, abrir la ventana de búsqueda por nombre
-      const searchWindow = window.open('/buscarProducto.html', 'Buscar Producto', 'width=600,height=400');
-      searchWindow.focus();
-  }
-}
+
 
 // Lógica para buscar productos por nombre desde la ventana emergente
 function buscarProductosPorNombre() {
@@ -301,5 +329,4 @@ document.addEventListener('keydown', function (event) {
       event.preventDefault();
   }
 });
-//hasta aca funciona bien
 //hasta aca funciona bien

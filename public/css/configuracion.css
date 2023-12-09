@@ -20,8 +20,13 @@
   }
   
   .sidebar a:hover {
-    color: #f1f1f1;
+    color: darkcyan;
   }
+
+  .sidebar h1 {
+    color: darkcyan;
+  }
+  
   
   /* Estilo para el contenido principal */
 .content {
@@ -30,9 +35,12 @@
   margin-top: 0;
 }
 
+.content h3{
+  color: darkcyan;
+}
 /* Estilo para el título principal */
 .content h1 {
-  font-size: 24px; /* Reducir el tamaño de fuente del título principal */
+  font-size: 30px; /* Reducir el tamaño de fuente del título principal */
   margin-bottom: 10px; /* Ajustar el margen inferior del título principal */
   margin-top: 0;
 }
@@ -77,8 +85,23 @@
   padding: 9px 20px; /* Ajusta el padding para hacer el botón más grande */
 }
 
-
 /* Estilo para el resultado de la búsqueda */
 #stock-container {
   margin-top: 20px; /* Agregar un margen superior al contenedor de resultados */
 }
+/* Ancho del input de la direccion de la empresa */
+#direccionEmpresa {
+  width: 500px; 
+}
+
+/* Estilo para etiquetas específicas en la configuración */
+#configuracionForm label {
+  font-weight: bold; /* Aplica negrita a todas las etiquetas dentro de configuracionForm */
+  color: rgb(1, 96, 96);
+}
+
+/* Muestra cada etiqueta en una nueva línea y añade espacio entre etiquetas*/ 
+/* #configuracionForm label {
+  display: block; 
+  margin-bottom: 5px; 
+} */

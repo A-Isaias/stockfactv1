@@ -29,7 +29,13 @@
     <!-- Contenido principal -->
     <div class="content container mt-5">
       <!-- <h1 class="mb-4">Stock y Facturación</h1> -->
-
+      <!-- Precio del Dólar -->
+    <div class="card mb-4 mt-4">
+      <div class="card-header d-flex justify-content-between">
+          <span>Precio del Dólar</span>
+          <span id="precioDolar">Cargando...</span>
+      </div>
+  </div>
       <!-- Buscar Productos -->
       <div class="card mb-4">
         <div class="card-header">Buscar Productos</div>
@@ -133,7 +139,7 @@
     <script src="/js/index.js"></script>
     <script src="/js/search.js"></script>
 
-    <script>
+    <!-- <script>
       // Este script para manejar el evento submit del formulario
       document
         .getElementById("buscar-productos-form")
@@ -141,7 +147,7 @@
           event.preventDefault(); // Evita el envío convencional del formulario
           buscarProductos(); // Ejecuta la búsqueda
         });
-    </script>
+    </script> -->
     <script>
       // Este script para manejar el evento submit del formulario
       document

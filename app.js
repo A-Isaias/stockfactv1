@@ -86,31 +86,32 @@ function obtenerConfiguracion() {
 app.post('/producto', (req, res) => {
   const { nombre, costo, iva, stock } = req.body;
 
- // Obtén los valores de configuración del JSON
-const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
+  // Obtén los valores de configuración del JSON
+  const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
 
-const { valorDolar, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+  const { valorDolar, gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
 
-// Calcula el costo en dólares
-const costoDolar = parseFloat(costo) / valorDolar;
+  // Calcula el costo en dólares
+  const costoDolar = parseFloat(costo) / valorDolar;
 
-// Calcula los precios de lista en dólares
-const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
-const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
-const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
-const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+  // Calcula el tipo de cambio del día
+  const cotDolarCompra = valorDolar; // O obtén este valor según tu lógica desde configuracion.json
 
-// Convierte los precios de dólares a pesos
-const precioLista1 = precioLista1Dolar * valorDolar;
-const precioLista2 = precioLista2Dolar * valorDolar;
-const precioLista3 = precioLista3Dolar * valorDolar;
-const precioLista4 = precioLista4Dolar * valorDolar;
+  // Calcula los precios de lista en dólares
+  const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+  const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+  const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+  const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
 
-// Ahora puedes usar costoDolar y los precios en pesos para guardar en la base de datos
+  // Convierte los precios de dólares a pesos
+  const precioLista1 = precioLista1Dolar * valorDolar;
+  const precioLista2 = precioLista2Dolar * valorDolar;
+  const precioLista3 = precioLista3Dolar * valorDolar;
+  const precioLista4 = precioLista4Dolar * valorDolar;
 
   // Realiza la inserción en la base de datos con los nuevos valores
-  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar];
+  const sql = 'INSERT INTO productos (nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar, cotDolarCompra) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [nombre, costo, iva, precioLista1, precioLista2, precioLista3, precioLista4, stock, costoDolar, cotDolarCompra];
 
   db.query(sql, values, (err, result) => {
       if (err) {
@@ -123,6 +124,7 @@ const precioLista4 = precioLista4Dolar * valorDolar;
       res.status(201).send('Producto agregado correctamente');
   });
 });
+
 // Ruta para obtener todos los productos
 app.get('/productos', (req, res) => {
   db.query('SELECT * FROM productos', (err, results) => {
@@ -225,59 +227,61 @@ app.put('/producto/:id', (req, res) => {
 
 // Ruta para actualizar los precios de las listas
 app.put('/actualizar-precios-listas', (req, res) => {
-    const { valorDolar } = req.body;
+  const { valorDolar } = req.body;
 
-    // Obtén los valores de configuración del JSON
-    const configuracion = obtenerConfiguracion(); // Implementa la función según cómo cargas la configuración
+  // Obtén los valores de configuración del JSON
+  const configuracion = obtenerConfiguracion();
 
-    const { gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+  if (!configuracion) {
+    console.error('Error al obtener la configuración en actualizar-precios-listas');
+    res.status(500).json({ error: 'Error al obtener la configuración' });
+    return;
+  }
 
-    // Realiza una consulta para obtener todos los productos
-    db.query('SELECT * FROM productos', (err, results) => {
-        if (err) {
-            console.error('Error al obtener productos: ' + err.message);
-            res.status(500).json({ error: 'Error al obtener productos' });
-            return;
+  const { gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+
+  // Realiza una consulta para obtener todos los productos
+  db.query('SELECT * FROM productos', (err, results) => {
+    if (err) {
+      console.error('Error al obtener productos: ' + err.message);
+      res.status(500).json({ error: 'Error al obtener productos' });
+      return;
+    }
+
+    // Itera sobre los resultados y actualiza los precios de cada producto
+    results.forEach(producto => {
+      const { id, costo, iva, stock } = producto;
+
+      // Calcula el costo en dólares
+      const costoDolar = parseFloat(costo) / valorDolar;
+
+      // Calcula los precios de lista en dólares
+      const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
+      const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
+      const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
+      const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
+
+      // Convierte los precios de dólares a pesos
+      const precioLista1 = (precioLista1Dolar * valorDolar).toFixed(2);
+      const precioLista2 = (precioLista2Dolar * valorDolar).toFixed(2);
+      const precioLista3 = (precioLista3Dolar * valorDolar).toFixed(2);
+      const precioLista4 = (precioLista4Dolar * valorDolar).toFixed(2);
+
+      // Actualiza el costo y los precios en la base de datos
+      db.query(
+        'UPDATE productos SET costo=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
+        [costo, precioLista1, precioLista2, precioLista3, precioLista4, id],
+        (err, result) => {
+          if (err) {
+            console.error('Error al actualizar precios del producto con ID ' + id + ': ' + err.message);
+          }
         }
-
-        // Itera sobre los resultados y actualiza los precios de cada producto
-        results.forEach(producto => {
-            const { id, costo, iva, stock } = producto;
-
-            // Calcula el costo en dólares
-            const costoDolar = parseFloat(costo) / valorDolar;
-
-            // Calcula el nuevo costo en pesos
-            const costoPesos = parseFloat(costo) * valorDolar;
-
-            // Calcula los precios de lista en dólares
-            const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
-            const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
-            const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
-            const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
-
-            // Convierte los precios de dólares a pesos
-            const precioLista1 = precioLista1Dolar * valorDolar;
-            const precioLista2 = precioLista2Dolar * valorDolar;
-            const precioLista3 = precioLista3Dolar * valorDolar;
-            const precioLista4 = precioLista4Dolar * valorDolar;
-
-            // Actualiza el costo y los precios en la base de datos
-            db.query(
-                'UPDATE productos SET costo=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
-                [costoPesos, precioLista1, precioLista2, precioLista3, precioLista4, id],
-                (err, result) => {
-                    if (err) {
-                        console.error('Error al actualizar precios del producto con ID ' + id + ': ' + err.message);
-                    }
-                }
-            );
-        });
-
-        res.status(200).json({ message: 'Precios actualizados correctamente' });
+      );
     });
-});
 
+    res.status(200).json({ message: 'Precios actualizados correctamente' });
+  });
+});
 
 // Ruta para borrar un producto por ID
 app.delete('/producto/:id', (req, res) => {
@@ -398,6 +402,40 @@ app.put('/configuracion', (req, res) => {
 
       console.log('Configuración guardada correctamente');
       res.status(200).json({ message: 'Configuración guardada correctamente' });
+  });
+});
+
+// Ruta para obtener los datos de la empresa
+app.get('/datos-empresa', (req, res) => {
+  const datosEmpresaPath = path.join(__dirname, 'public', 'config', 'datos.json');
+
+  fs.readFile(datosEmpresaPath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error al leer datos.json: ', err.message);
+      res.status(500).json({ error: 'Error al obtener los datos de la empresa' });
+      return;
+    }
+
+    const datosEmpresa = JSON.parse(data);
+    res.json(datosEmpresa);
+  });
+});
+
+// Ruta para guardar los datos de la empresa
+app.put('/datos-empresa', (req, res) => {
+  const nuevosDatosEmpresa = req.body;
+
+  const datosEmpresaPath = path.join(__dirname, 'public', 'config', 'datos.json');
+
+  fs.writeFile(datosEmpresaPath, JSON.stringify(nuevosDatosEmpresa), (err) => {
+    if (err) {
+      console.error('Error al guardar datos.json: ', err.message);
+      res.status(500).json({ error: 'Error al guardar los datos de la empresa' });
+      return;
+    }
+
+    console.log('Datos de la empresa guardados correctamente');
+    res.status(200).json({ message: 'Datos de la empresa guardados correctamente' });
   });
 });
 
