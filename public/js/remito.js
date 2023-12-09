@@ -1,3 +1,4 @@
+//remito.js
 let itemsFactura = [];
 
 function volverAlInicio() {
@@ -11,9 +12,33 @@ function facturar() {
     window.location.href = '/remito.html';
   }
 
-function confirmarFactura() {
+  function confirmarFactura() {
     console.log('Factura confirmada:', itemsFactura);
-    // Aquí puedes enviar los datos al servidor o realizar otras acciones
+
+    // Obtener solo la información necesaria para actualizar el stock
+    const productosParaActualizarStock = itemsFactura.map(item => {
+        return { id: item.codigo, cantidad: item.cantidad };
+    });
+
+    // Aquí puedes enviar los datos al servidor
+    fetch('/confirmar-factura', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productos: productosParaActualizarStock }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al confirmar la factura en el servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Factura confirmada en el servidor:', data);
+        // Realizar otras acciones si es necesario
+    })
+    .catch(error => console.error('Error al confirmar la factura:', error));
 
     // Imprimir la factura
     imprimirFactura();

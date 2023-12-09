@@ -255,21 +255,21 @@ function volverArriba() {
   document.documentElement.scrollTop = 0; // Para navegadores modernos
 }
 
-// Muestra u oculta el botón de volver arriba según la posición del scroll
-window.onscroll = function() {
-  mostrarOcultarBoton();
-};
+// // Muestra u oculta el botón de volver arriba según la posición del scroll
+// window.onscroll = function() {
+//   mostrarOcultarBoton();
+// };
 
-function mostrarOcultarBoton() {
-  var botonVolverArriba = document.getElementById("btnVolverArriba");
+// function mostrarOcultarBoton() {
+//   var botonVolverArriba = document.getElementById("btnVolverArriba");
 
-  // Muestra el botón cuando el scroll está más abajo de 300 píxeles
-  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-      botonVolverArriba.style.display = "block";
-  } else {
-      botonVolverArriba.style.display = "none";
-  }
-}
+//   // Muestra el botón cuando el scroll está más abajo de 300 píxeles
+//   if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+//       botonVolverArriba.style.display = "block";
+//   } else {
+//       botonVolverArriba.style.display = "none";
+//   }
+// }
 
 // Lógica para redirigir a remito.html al hacer clic en el botón "Facturar"
 function facturar() {

@@ -1,3 +1,4 @@
+//app.js 
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path'); 
@@ -437,6 +438,36 @@ app.put('/datos-empresa', (req, res) => {
     console.log('Datos de la empresa guardados correctamente');
     res.status(200).json({ message: 'Datos de la empresa guardados correctamente' });
   });
+});
+
+// Nueva ruta para confirmar la factura y actualizar el stock
+app.post('/confirmar-factura', async (req, res) => {
+  const productosFactura = req.body.productos;
+
+  try {
+      // Iniciar una transacción para asegurar la consistencia de la base de datos
+      await db.beginTransaction();
+
+      // Lógica para actualizar el stock aquí
+      for (const producto of productosFactura) {
+          const { id, cantidad } = producto;
+
+          // Realizar una consulta para restar la cantidad del stock
+          await db.query('UPDATE productos SET stock = stock - ? WHERE id = ?', [cantidad, id]);
+      }
+
+      // Confirmar la transacción si todas las actualizaciones son exitosas
+      await db.commit();
+
+      res.status(200).json({ message: 'Factura confirmada y stock actualizado correctamente' });
+  } catch (error) {
+      // Revertir la transacción en caso de error
+      await db.rollback();
+
+      console.error('Error al confirmar la factura y actualizar el stock:', error);
+
+      res.status(500).json({ message: 'Error al confirmar la factura y actualizar el stock' });
+  }
 });
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
