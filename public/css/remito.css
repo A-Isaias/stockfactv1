@@ -158,7 +158,8 @@ body {
 
 @media screen and (max-width: 1366px) {
   .container-xl {
-    max-width: 100%; /* Utiliza el ancho completo del contenedor principal */
+    max-width: calc(100% - 250px); /* Resta el ancho del sidebar al ancho total */
+    margin-left: 250px; /* Establece el margen izquierdo igual al ancho del sidebar */
   }
   .container {
     margin-top: 20px;
