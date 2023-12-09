@@ -109,10 +109,19 @@ body {
     display: none;
   }
 
-  .total-container {
-    margin-top: 1rem;
-  }
+/* Estilos del total de la factura */
+.total-container {
+  text-align: right; /* Alinea el contenido a la derecha */
+  width: 100%; /* Opcional: Puedes ajustar el ancho según tus necesidades */
+  margin-top: 1rem;
 }
+
+#total {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: green;
+}
+
 
 .header .container .row {
   display: flex;
@@ -129,4 +138,5 @@ body {
   .col-md-6 {
     width: 48%;
   }
+}
 }
