@@ -82,12 +82,11 @@
   padding: 9px 20px; /* Ajusta el padding para hacer el botón más grande */
 }
 
-
 /* Estilo para el resultado de la búsqueda */
 #stock-container {
   margin-top: 20px; /* Agregar un margen superior al contenedor de resultados */
 }
 /* Ancho del input de la direccion de la empresa */
 #direccionEmpresa {
-  width: 500px; /* Ajusta el ancho según tus necesidades */
+  width: 500px; 
 }

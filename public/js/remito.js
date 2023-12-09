@@ -330,4 +330,3 @@ document.addEventListener('keydown', function (event) {
   }
 });
 //hasta aca funciona bien
-//hasta aca funciona bien
