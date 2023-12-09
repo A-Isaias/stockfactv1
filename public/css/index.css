@@ -87,3 +87,62 @@
 #stock-container {
   margin-top: 20px; /* Agregar un margen superior al contenedor de resultados */
 }
+
+@media screen and (max-width: 1366px) {
+  .sidebar {
+    width: 200px; /* Ajusta el ancho del sidebar según sea necesario */
+  }
+
+  .sidebar a {
+    font-size: 16px; /* Ajusta el tamaño de fuente de los enlaces del sidebar */
+  }
+
+  .sidebar h1 {
+    font-size: 24px; /* Ajusta el tamaño de fuente del encabezado del sidebar */
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .container-xl {
+    max-width: 95%; /* Utiliza el ancho completo del contenedor principal */
+  }
+
+  .card {
+    margin: 0; /* Elimina el margen del card para aprovechar el espacio completo */
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .sidebar {
+    width: 200px; /* Ajusta el ancho del sidebar según sea necesario */
+  }
+
+  .sidebar a {
+    font-size: 16px; /* Ajusta el tamaño de fuente de los enlaces del sidebar */
+  }
+
+  .sidebar h1 {
+    font-size: 24px; /* Ajusta el tamaño de fuente del encabezado del sidebar */
+  }
+}
+
+/* Ajustes específicos para resoluciones menores a 1366px */
+@media screen and (max-width: 1366px) {
+  .content {
+    margin-left: 180px; /* Ajusta el margen izquierdo del contenido principal para resoluciones más pequeñas */
+  }
+
+  /* Ajustes específicos para los elementos dentro del contenido principal */
+  .card-header {
+    font-size: 16px; /* Reducir el tamaño de fuente de los títulos de las secciones */
+  }
+
+  .card-body form {
+    font-size: 12px; /* Reducir el tamaño de fuente de los formularios */
+  }
+
+  .btn {
+    font-size: 12px; /* Reducir el tamaño de fuente de los botones */
+    padding: 6px 12px; /* Reducir el padding de los botones */
+  }
+}

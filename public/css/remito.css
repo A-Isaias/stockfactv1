@@ -5,6 +5,7 @@ body {
 
 .container {
   max-width: 800px;
+  margin-top: 20px;
 }
 
 /* Estilos del formulario */
@@ -123,6 +124,7 @@ body {
 }
 
 
+
 .header .container .row {
   display: flex;
   justify-content: space-between;
@@ -140,3 +142,41 @@ body {
   }
 }
 }
+@media screen and (max-width: 1366px) {
+  .sidebar {
+    width: 200px; /* Ajusta el ancho del sidebar según sea necesario */
+  }
+
+  .sidebar a {
+    font-size: 16px; /* Ajusta el tamaño de fuente de los enlaces del sidebar */
+  }
+
+  .sidebar h1 {
+    font-size: 24px; /* Ajusta el tamaño de fuente del encabezado del sidebar */
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .container-xl {
+    max-width: 100%; /* Utiliza el ancho completo del contenedor principal */
+  }
+  .container {
+    margin-top: 20px;
+  }
+  .card {
+    margin: 0; /* Elimina el margen del card para aprovechar el espacio completo */
+  }
+}
+
+/* Ajustes específicos para resoluciones menores a 1366px */
+@media screen and (max-width: 1366px) {
+  .mt-3 button {
+    margin-left: 20px; /* Ajusta el margen izquierdo de los botones para resoluciones más pequeñas */
+  }
+/* Estilos del total a pagar */
+.total-container {
+  text-align: right; /* Alinea el contenido a la derecha */
+  width: calc(100% - 270px); /* Resta el ancho del sidebar más un pequeño margen al ancho total */
+  margin-top: 20px; /* Ajusta el margen superior del área del total a pagar */
+}
+  }
