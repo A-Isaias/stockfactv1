@@ -123,6 +123,8 @@ function guardarConfiguracion() {
 
             // Después de guardar la configuración, actualiza los precios de las listas
             actualizarPreciosListas(valorDolar); // Pasa el valorDolar a la función
+            // También guarda los datos de la empresa
+            guardarDatosEmpresa();
         })
         .catch(error => {
             console.error('Error al guardar la configuración: ', error);

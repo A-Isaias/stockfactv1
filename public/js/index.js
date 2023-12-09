@@ -277,6 +277,32 @@ function facturar() {
   window.location.href = '/remito.html';
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+  // Llamada a la función para cargar el precio del dólar al cargar la página
+  cargarPrecioDolar();
+});
+
+function cargarPrecioDolar() {
+  // Realiza una solicitud para obtener el precio del dólar desde configuracion.json
+  fetch('/configuracion')
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Error al obtener la configuración');
+          }
+          return response.json();
+      })
+      .then(configuracion => {
+          // Actualiza el contenido HTML con el precio del dólar
+          const precioDolar = configuracion.valorDolar || 0.0;
+          const precioDolarElement = document.getElementById('precioDolar');
+          if (precioDolarElement) {
+              precioDolarElement.textContent = `$ ${precioDolar.toFixed(2)}`;
+          }
+      })
+      .catch(error => {
+          console.error('Error al obtener la configuración: ', error);
+      });
+}
 // Este script se ejecutará cuando la página se cargue completamente
 document.addEventListener('DOMContentLoaded', function () {
   verStock(); // Llama a la función para mostrar todos los productos al cargar la página
