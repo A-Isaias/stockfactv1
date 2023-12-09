@@ -72,3 +72,61 @@ body {
 .sidebar h1 {
   color: darkcyan;
 }
+
+/* Añade el siguiente estilo a tu archivo CSS o en línea donde corresponda */
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  text-align: center;
+  padding: 10px;
+  border-top: 1px solid #dee2e6;
+}
+
+.form-control {
+  height: auto;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Ajustes para la versión de impresión */
+@media print {
+  .form-control {
+    height: auto;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .form-group.row {
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar,
+  .mt-3,
+  .imprimir-oculto,
+  .footer {
+    display: none;
+  }
+
+  .total-container {
+    margin-top: 1rem;
+  }
+}
+
+.header .container .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Estilos para la vista de impresión */
+@media print {
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .col-md-6 {
+    width: 48%;
+  }
+}

@@ -1,87 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <link rel="stylesheet" href="css/remito.css" />
-    <title>Factura</title>
-  </head>
 
-  <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h1 class="mb-4">Stock y Facturación</h1>
-      <a href="#" onclick="agregarItem()">Buscar Producto</a> 
-      <a href="#" onclick="borrarItem()">Borrar Ultimo Item</a>
-      <a href="#" onclick="facturar()"> Cancelar Factura </a>
-      <a href="#" onclick="confirmarFactura()">Confirmar Factura</a>
-      <a href="/"> Volver al Inicio </a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <link rel="stylesheet" href="css/remito.css" />
+  <title>Factura</title>
+</head>
+
+<body>
+<!-- Encabezado -->
+<div class="header">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <!-- Datos del Establecimiento -->
+        <h4 id="nombreEmpresa"></h4>
+        <br>
+        <p id="cuitEmpresa"></p>
+        <p id="condicionIvaEmpresa"></p>
+        <p id="direccionEmpresa"></p>
+        <p>DOCUMENTO NO VALIDO COMO FACTURA</p>
+      </div>
+      <div class="col-md-6">
+        <!-- Datos del Cliente -->
+        <div class="form-group row">
+          <label for="nombreCliente" class="col-md-3 col-form-label">Cliente:</label>
+          <div class="col-md-9">
+            <input
+              type="text"
+              class="form-control"
+              id="nombreCliente"
+              value="CONSUMIDOR FINAL"
+              maxlength="8"
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="cuitCliente" class="col-md-3 col-form-label">CUIT:</label>
+          <div class="col-md-9">
+            <input
+              type="text"
+              class="form-control"
+              id="cuitCliente"
+              maxlength="12"
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="condicionIvaCliente" class="col-md-3 col-form-label">Condición IVA:</label>
+          <div class="col-md-9">
+            <select class="form-control" id="condicionIvaCliente">
+              <option value="Consumidor Final">Consumidor Final</option>
+              <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
+              <option value="Responsable Monotributo">Responsable Monotributo</option>
+              <option value="Monotributista Social">Monotributista Social</option>
+              <option value="Monotributista Trabajador Independiente Promovido">Monotributista Trabajador Independiente Promovido</option>
+              <option value="IVA Sujeto Exento">IVA Sujeto Exento</option>
+              <option value="Sujeto No Categorizado">Sujeto No Categorizado</option>
+              <option value="Proveedor del Exterior">Proveedor del Exterior</option>
+              <option value="Cliente del Exterior">Cliente del Exterior</option>
+              <option value="IVA Liberado - Ley N° 19.640">IVA Liberado - Ley N° 19.640</option>
+              <option value="IVA No Alcanzado">IVA No Alcanzado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="direccionCliente" class="col-md-3 col-form-label">Dirección:</label>
+          <div class="col-md-9">
+            <input
+              type="text"
+              class="form-control"
+              id="direccionCliente"
+            />
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1 class="mb-4">Stock y Facturación</h1>
+    <a href="#" onclick="agregarItem()">Buscar Producto</a>
+    <a href="#" onclick="borrarItem()">Borrar Ultimo Item</a>
+    <a href="#" onclick="facturar()"> Cancelar Factura </a>
+    <a href="#" onclick="confirmarFactura()">Confirmar Factura</a>
+    <a href="/"> Volver al Inicio </a>
+  </div>
+
 
     <!-- Contenido principal -->
     <div class="container-xl">
       <div class="card">
         <div class="card-header">Factura</div>
         <div class="card-body">
-          <form id="remito-form">
+          <div id="remito-form">
             <div class="form-row">
-              <div class="form-group col-md-2">
-                <label for="cantidad">Cantidad:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="cantidad"
-                  required
-                  maxlength="6"
-                  style="width: 100px"
-                />
-              </div>
-              <div class="form-group col-md-2">
-                <label for="codigo">Código (ID):</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="codigo"
-                  required
-                  maxlength="6"
-                  style="width: 100px"
-                />
-              </div>
-              <div class="form-group col-md-4">
-                <label for="producto">Producto:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="producto"
-                  readonly
-                  style="width: 100%"
-                />
-              </div>
-              <div class="form-group col-md-2">
-                <label for="precioUnitario">Precio Unitario:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="precioUnitario"
-                  readonly
-                  style="width: 100px"
-                />
-              </div>
-              <div class="form-group col-md-2">
-                <label for="subtotal">Subtotal:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="subtotal"
-                  readonly
-                  style="width: 100px"
-                />
-              </div>
+              
+              <div class="form-group col-md-2 imprimir-oculto">
+                  <label for="cantidad">Cantidad:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="cantidad"
+                    required
+                    maxlength="6"
+                    style="width: 100px"
+                  />
+                </div>
+                <div class="form-group col-md-2 imprimir-oculto">
+                  <label for="codigo">Código (ID):</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="codigo"
+                    required
+                    maxlength="6"
+                    style="width: 100px"
+                  />
+                </div>
+                <div class="form-group col-md-4 imprimir-oculto">
+                  <label for="producto">Producto:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="producto"
+                    readonly
+                    style="width: 100%"
+                  />
+                </div>
+                <div class="form-group col-md-2 imprimir-oculto">
+                  <label for="precioUnitario">Precio Unitario:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="precioUnitario"
+                    readonly
+                    style="width: 100px"
+                  />
+                </div>
+                <div class="form-group col-md-2 imprimir-oculto">
+                  <label for="subtotal">Subtotal:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="subtotal"
+                    readonly
+                    style="width: 100px"
+                  />
+                </div>
+              </>
             </div>
 
             <table class="table">
@@ -97,62 +169,53 @@
               <tbody id="remito-table-body"></tbody>
             </table>
 
-            <div class="mt-3">
-              <button
-                type="button"
-                class="btn btn-primary"
-                onclick="agregarItem()"
-              >
-                Buscar Producto
-              </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                onclick="borrarItem()"
-              >
-                Borrar Último Item
-              </button>
-              <button
-                type="button"
-                class="btn btn-warning"
-                onclick="facturar()"
-              >
-                Cancelar Factura
-              </button>
-              <button
-                type="button"
-                class="btn btn-success"
-                onclick="confirmarFactura()"
-              >
-                Confirmar Factura
-              </button>
-              <button type="button" class="btn btn-secondary" id="agregarFila">
-                Agregar Fila
-              </button>
-            </div>
-            <div class="mt-3">
-              <strong>Total a Pagar:</strong> <span id="total">0.00</span>
-            </div>
+            <div class="total-container">
+  <strong>Total a Pagar:</strong> <span id="total">0.00</span>
+</div>
+
+<div class="mt-3">
+  <button type="button" class="btn btn-primary" onclick="agregarItem()">Buscar Producto</button>
+  <button type="button" class="btn btn-danger" onclick="borrarItem()">Borrar Último Item</button>
+  <button type="button" class="btn btn-warning" onclick="facturar()">Cancelar Factura</button>
+  <button type="button" class="btn btn-success" onclick="confirmarFactura()">Confirmar Factura</button>
+  <!-- no borrar el id="agregar fila" por que si no no anda el autocompletado nolocooo -->
+  <button type="button" class="btn btn-secondary" id="agregarFila" onclick="volverAlInicio()">Volver al Inicio</button>
+</div>
           </form>
         </div>
       </div>
     </div>
-    <!-- Formulario de busqueda -->
-    <div class="form-group col-md-6">
-      <label for="searchProductName"></label>
-      <input
-        type="text"
-        class="form-control"
-        id="searchProductName"
-        style="display: none"
-        onkeydown="abrirBusquedaProductos(event)"
-      />
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+    <!-- Formulario de búsqueda -->
+  <div class="form-group col-md-6">
+    <label for="searchProductName"></label>
+    <input type="text" class="form-control" id="searchProductName" style="display: none"
+      onkeydown="abrirBusquedaProductos(event)" />
+  </div>
 
-    <script src="js/remito.js"></script>
-  </body>
+  <!-- Pie de página
+  <div class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          
+          <p>INGRESAR CANTIDAD E ID. SI NO SE SABE ID, PRESIONAR &lt;ENTER&gt; PARA ACTIVAR LA BÚSQUEDA. PARA CAMBIAR DE CAMPO Y AUTOCOMPLETAR, USAR &lt;TAB&gt;</p>
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio nam laboriosam expedita reiciendis consequuntur explicabo cum ducimus, quisquam sit quaerat illum blanditiis omnis. Autem, tempora magni optio culpa dolore provident.</p>
+        </div>
+        <div class="col-md-6">
+         
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+
+  <!-- Agrega el script remito.js -->
+  <script src="js/remito.js" defer></script>
+
+</body>
+
 </html>

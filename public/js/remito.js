@@ -1,6 +1,11 @@
 let itemsFactura = [];
 
-// se usa para recargar la pagina"
+function volverAlInicio() {
+    // Redirecciona al inicio
+    window.location.href = '/';
+}
+
+// se usa para recargar la pagina
 function facturar() {
     // Redirige a remito.html
     window.location.href = '/remito.html';
@@ -45,7 +50,20 @@ function calcularTotal() {
 function actualizarTotalEnFormulario() {
     // Esta función ahora simplemente actualiza el total visualmente en el formulario
 }
-
+document.addEventListener('DOMContentLoaded', function () {
+    // Carga los datos del archivo js/datos.json
+    fetch('/config/datos.json')
+      .then(response => response.json())
+      .then(datos => {
+        // Actualiza los elementos del encabezado con los datos cargados
+        document.getElementById('nombreEmpresa').innerText = datos.datosEmpresa.estNombre;
+        document.getElementById('cuitEmpresa').innerText = 'CUIT: ' + datos.datosEmpresa.estCuit;
+        document.getElementById('condicionIvaEmpresa').innerText = 'Condición IVA: ' + datos.datosEmpresa.estCondicionIVA;
+        document.getElementById('direccionEmpresa').innerText = 'Dirección: ' + datos.datosEmpresa.estDireccion;
+      })
+      .catch(error => console.error('Error al cargar datos del archivo datos.json:', error));
+  
+  });
 
 document.addEventListener('DOMContentLoaded', function () {
   const agregarFilaBtn = document.getElementById('agregarFila');
@@ -216,14 +234,7 @@ codigoInput.addEventListener('keydown', function (event) {
     }
 });
 
-// Lógica para abrir la ventana de búsqueda por nombre
-function abrirBusquedaProductos(event) {
-  if (event.key === "Enter") {
-      // Se presionó Enter, abrir la ventana de búsqueda por nombre
-      const searchWindow = window.open('/buscarProducto.html', 'Buscar Producto', 'width=600,height=400');
-      searchWindow.focus();
-  }
-}
+
 
 // Lógica para buscar productos por nombre desde la ventana emergente
 function buscarProductosPorNombre() {
