@@ -405,6 +405,38 @@ app.put('/configuracion', (req, res) => {
   });
 });
 
+// Ruta para obtener datos de la empresa
+app.get('/datos-empresa', (req, res) => {
+    // Lee los datos de datos.json
+    const datosEmpresaPath = path.join(__dirname, 'public', 'config', 'datos.json');
+    fs.readFile(datosEmpresaPath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error al leer datos.json: ', err.message);
+            res.status(500).json({ error: 'Error al obtener datos de la empresa' });
+            return;
+        }
+        const datosEmpresa = JSON.parse(data);
+        res.json(datosEmpresa);
+    });
+});
+
+// Ruta para guardar datos de la empresa
+app.put('/datos-empresa', (req, res) => {
+    const nuevosDatosEmpresa = req.body;
+    const datosEmpresaPath = path.join(__dirname, 'public', 'config', 'datos.json');
+
+    fs.writeFile(datosEmpresaPath, JSON.stringify(nuevosDatosEmpresa), (err) => {
+        if (err) {
+            console.error('Error al guardar datos.json: ', err.message);
+            res.status(500).json({ error: 'Error al guardar datos de la empresa' });
+            return;
+        }
+
+        console.log('Datos de la empresa guardados correctamente en datos.json');
+        res.status(200).json({ message: 'Datos de la empresa guardados correctamente' });
+    });
+});
+
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 

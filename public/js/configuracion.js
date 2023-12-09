@@ -6,9 +6,69 @@ function volverAlInicio() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Llamada a la función para cargar la configuración al cargar la página
+    // Llamada a la función para cargar la configuración y los datos de la empresa al cargar la página
     cargarConfiguracion();
+    cargarDatosEmpresa();
 });
+
+// Nueva función para cargar la configuración de la empresa
+function cargarDatosEmpresa() {
+    // Realiza una solicitud para cargar datos directamente desde datos.json
+    fetch('/config/datos.json')  // Ajusta la ruta según tu estructura de archivos
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de la empresa');
+            }
+            return response.json();
+        })
+        .then(datos => {
+            // Actualiza los campos del formulario con los datos de la empresa obtenidos
+            const datosEmpresa = datos.datosEmpresa;
+            console.log('Datos de la empresa obtenidos:', datosEmpresa);
+            document.getElementById('nombreEmpresa').value = datosEmpresa.estNombre;
+            document.getElementById('cuitEmpresa').value = datosEmpresa.estCuit;
+            document.getElementById('condicionIvaEmpresa').value = datosEmpresa.estCondicionIVA;
+            document.getElementById('direccionEmpresa').value = datosEmpresa.estDireccion;
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos de la empresa: ', error);
+        });
+}
+
+// Nueva función para guardar los datos de la empresa
+function guardarDatosEmpresa() {
+    // Obtén los nuevos valores del formulario
+    const nombreEmpresa = document.getElementById('nombreEmpresa').value;
+    const cuitEmpresa = document.getElementById('cuitEmpresa').value;
+    const condicionIvaEmpresa = document.getElementById('condicionIvaEmpresa').value;
+    const direccionEmpresa = document.getElementById('direccionEmpresa').value;
+
+    // Crea un objeto con los nuevos datos de la empresa
+    const nuevosDatosEmpresa = {
+        estNombre: nombreEmpresa,
+        estCuit: cuitEmpresa,
+        estCondicionIVA: condicionIvaEmpresa,
+        estDireccion: direccionEmpresa
+    };
+
+    // Realiza una solicitud al servidor para guardar los nuevos datos de la empresa
+    fetch('/config/datos.json', {  // Ajusta la ruta según tu estructura de archivos
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ datosEmpresa: nuevosDatosEmpresa }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al guardar los datos de la empresa');
+            }
+            console.log('Datos de la empresa guardados correctamente');
+        })
+        .catch(error => {
+            console.error('Error al guardar los datos de la empresa: ', error);
+        });
+}
 
 function cargarConfiguracion() {
     // Realiza una solicitud al servidor para obtener la configuración
