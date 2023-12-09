@@ -19,8 +19,10 @@
     display: block;
   }
   
-  
+  .sidebar a:hover {
+    color: darkcyan;
   }
+
   /* Estilo para el título en el sidebar */
 .sidebar h1 {
   color: darkcyan; /* Cambiar el color del texto a blanco */
