@@ -90,3 +90,15 @@
 #direccionEmpresa {
   width: 500px; 
 }
+
+/* Estilo para etiquetas específicas en la configuración */
+#configuracionForm label {
+  font-weight: bold; /* Aplica negrita a todas las etiquetas dentro de configuracionForm */
+  color: rgb(1, 96, 96);
+}
+
+/* Muestra cada etiqueta en una nueva línea y añade espacio entre etiquetas*/ 
+/* #configuracionForm label {
+  display: block; 
+  margin-bottom: 5px; 
+} */
