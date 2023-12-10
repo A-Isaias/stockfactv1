@@ -226,7 +226,6 @@ app.put('/producto/:id', (req, res) => {
   });
 });
 
-// Ruta para actualizar los precios de las listas
 app.put('/actualizar-precios-listas', (req, res) => {
   const { valorDolar } = req.body;
 
@@ -239,7 +238,7 @@ app.put('/actualizar-precios-listas', (req, res) => {
     return;
   }
 
-  const { gananciaLista1, gananciaLista2, gananciaLista3, gananciaLista4 } = configuracion;
+  // No necesitamos las ganancias de las listas para este caso
 
   // Realiza una consulta para obtener todos los productos
   db.query('SELECT * FROM productos', (err, results) => {
@@ -249,38 +248,34 @@ app.put('/actualizar-precios-listas', (req, res) => {
       return;
     }
 
-    // Itera sobre los resultados y actualiza los precios de cada producto
+    // Itera sobre los resultados y actualiza los costos de cada producto
     results.forEach(producto => {
-      const { id, costo, iva, stock } = producto;
+      const { id, costo } = producto;
 
-      // Calcula el costo en dólares
-      const costoDolar = parseFloat(costo) / valorDolar;
+      // Verifica que costo y valorDolar sean números válidos antes de realizar el cálculo
+      if (!isNaN(costo) && isFinite(costo) && !isNaN(valorDolar) && isFinite(valorDolar)) {
+        // Calcula el costo en dólares
+        const costoDolar = parseFloat(costo) / valorDolar;
 
-      // Calcula los precios de lista en dólares
-      const precioLista1Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista1 / 100);
-      const precioLista2Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista2 / 100);
-      const precioLista3Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista3 / 100);
-      const precioLista4Dolar = costoDolar * (1 + parseFloat(iva) / 100) * (1 + gananciaLista4 / 100);
-
-      // Convierte los precios de dólares a pesos
-      const precioLista1 = (precioLista1Dolar * valorDolar).toFixed(2);
-      const precioLista2 = (precioLista2Dolar * valorDolar).toFixed(2);
-      const precioLista3 = (precioLista3Dolar * valorDolar).toFixed(2);
-      const precioLista4 = (precioLista4Dolar * valorDolar).toFixed(2);
-
-      // Actualiza el costo y los precios en la base de datos
-      db.query(
-        'UPDATE productos SET costo=?, precioLista1=?, precioLista2=?, precioLista3=?, precioLista4=? WHERE id=?',
-        [costo, precioLista1, precioLista2, precioLista3, precioLista4, id],
-        (err, result) => {
-          if (err) {
-            console.error('Error al actualizar precios del producto con ID ' + id + ': ' + err.message);
+        // Actualiza el costo y el costoDolar en la base de datos
+        db.query(
+          'UPDATE productos SET costo=?, costoDolar=? WHERE id=?',
+          [costo, costoDolar, id],
+          (err, result) => {
+            if (err) {
+              console.error(`Error al actualizar costos del producto con ID ${id}: ${err.message}`);
+            }
           }
-        }
-      );
+        );
+      } else {
+        console.error(`Error: costo o valorDolar no son números válidos - ID: ${id}, Costo: ${costo}, Valor Dolar: ${valorDolar}`);
+      }
     });
 
-    res.status(200).json({ message: 'Precios actualizados correctamente' });
+    // Log para depurar
+    console.log('Operación completada');
+
+    res.status(200).json({ message: 'Costos actualizados correctamente' });
   });
 });
 

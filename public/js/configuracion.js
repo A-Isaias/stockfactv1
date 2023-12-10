@@ -132,6 +132,8 @@ function guardarConfiguracion() {
 }
 
 function actualizarPreciosListas(nuevoValorDolar) {
+    console.log('Valor Dolar enviado al servidor:', nuevoValorDolar);
+
     // Realiza una solicitud al servidor para actualizar los precios de las listas
     fetch('/actualizar-precios-listas', {
         method: 'PUT',
@@ -140,13 +142,20 @@ function actualizarPreciosListas(nuevoValorDolar) {
         },
         body: JSON.stringify({ valorDolar: nuevoValorDolar }),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al actualizar precios de las listas');
-            }
-            console.log('Precios actualizados correctamente');
-        })
-        .catch(error => {
-            console.error('Error al actualizar precios de las listas: ', error);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al actualizar precios de las listas');
+        }
+        return response.json(); // Espera la respuesta del servidor que incluirá los nuevos costos calculados
+    })
+    .then(data => {
+        // Actualiza la interfaz de usuario con los nuevos precios o realiza otras acciones necesarias
+        console.log('Precios actualizados correctamente:', data);
+        mostrarMensajeExito('Precios actualizados correctamente');
+        // Aquí puedes llamar a funciones adicionales para actualizar la interfaz si es necesario
+    })
+    .catch(error => {
+        console.error('Error al actualizar precios de las listas: ', error);
+        mostrarMensajeError('Error al actualizar precios de las listas');
+    });
 }
