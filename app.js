@@ -465,6 +465,43 @@ app.post('/confirmar-factura', async (req, res) => {
   }
 });
 
+// Ruta para actualizar el costo de todos los productos
+app.put('/producto/actualizar-costo', (req, res) => {
+  const nuevoCosto = req.body.nuevoCosto;
+
+  if (isNaN(parseFloat(nuevoCosto))) {
+    return res.status(400).json({ error: 'Por favor, ingrese un número válido para el nuevo costo.' });
+  }
+
+  // Lógica para actualizar el costo de todos los productos en la base de datos
+  const sql = 'UPDATE productos SET costo = ?';
+
+  db.query(sql, [nuevoCosto], (err, results) => {
+    if (err) {
+      console.error('Error al actualizar el costo de los productos: ' + err.message);
+      return res.status(500).json({ error: 'Error al actualizar el costo de los productos' });
+    }
+
+    res.json({ message: 'Costo actualizado correctamente en todos los productos' });
+  });
+});
+
+// Ruta para obtener el costo actual de los productos
+// Ruta para obtener el costo actual de todos los productos
+app.get('/producto/costo-actual', (req, res) => {
+  // Realizar una consulta para obtener todos los costos actuales
+  db.query('SELECT id, costo FROM productos', (err, results) => {
+    if (err) {
+      console.error('Error al obtener el costo actual de los productos: ' + err.message);
+      res.status(500).json({ error: 'Error al obtener el costo actual de los productos' });
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
+
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
