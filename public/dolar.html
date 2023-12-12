@@ -1,0 +1,42 @@
+<!-- Formulario de Edición -->
+<form id="edit-product-form">
+    <!-- Campos comunes, puedes agregar o quitar según tus necesidades -->
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required>
+    
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock" name="stock" required>
+  
+    <label for="costo">Costo:</label>
+    <input type="number" id="costo" name="costo" step="0.01" required>
+  
+    <label for="iva">IVA:</label>
+    <input type="number" id="iva" name="iva" step="0.01" required>
+  
+    <label for="precioLista1">Precio Lista 1:</label>
+    <input type="number" id="precioLista1" name="precioLista1" step="0.01" required>
+  
+    <label for="precioLista2">Precio Lista 2:</label>
+    <input type="number" id="precioLista2" name="precioLista2" step="0.01" required>
+  
+    <label for="precioLista3">Precio Lista 3:</label>
+    <input type="number" id="precioLista3" name="precioLista3" step="0.01" required>
+  
+    <label for="precioLista4">Precio Lista 4:</label>
+    <input type="number" id="precioLista4" name="precioLista4" step="0.01" required>
+  
+    <!-- Nuevo campo para ingresar el valor del dólar -->
+    <label for="valorDolar">Valor del Dólar:</label>
+    <input type="number" id="valorDolar" name="valorDolar" step="0.01" required>
+  
+    <!-- Campo oculto para almacenar el ID del producto -->
+    <input type="hidden" id="idProducto" name="idProducto" value="">
+    
+    <!-- Botón para guardar la edición -->
+    <button type="button" class="btn btn-success" onclick="guardarEdicion()">Guardar Edición</button>
+    <!-- Botón para eliminar el producto -->
+    <button type="button" class="btn btn-danger" onclick="confirmarEliminacion()">Eliminar Producto</button>
+  </form>
+
+  <script src="/js/dolar.js"></script>
+  
