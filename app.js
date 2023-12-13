@@ -518,11 +518,6 @@ app.put('/actualizar-costos', (req, res) => {
   console.log('Solicitud PUT recibida en /actualizar-costos');
   console.log('Cuerpo de la solicitud recibida:', req.body);
 
-  // // Verificación de existencia del producto
-  // if (!productoExiste) {
-  //   return res.status(404).json({ error: 'El producto no existe' });
-  // }
-
   // Obtén el cuerpo de la solicitud
   const nuevosCostos = req.body.nuevosCostos;
 
@@ -583,9 +578,7 @@ app.put('/actualizar-costos', (req, res) => {
                       console.error(`Error al actualizar los precios de las listas: ${precioErr.message}`);
                       // Puedes enviar una respuesta con el error si lo deseas
                     } else {
-                      console.log(
-                        `Precios de las listas actualizados correctamente para el producto con ID ${id}`
-                      );
+                      console.log(`Precios de las listas actualizados correctamente para el producto con ID ${id}`);
                     }
                   }
                 );
@@ -602,6 +595,7 @@ app.put('/actualizar-costos', (req, res) => {
   // Envía una respuesta
   res.json({ message: 'Costos y precios de listas actualizados correctamente' });
 });
+
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
