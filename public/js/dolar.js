@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   obtenerYMostrarValorDolar();
 });
+
 function actualizarCostoTodosProductos(costosActuales, incrementoPorcentaje) {
   const nuevosCostos = {};
 
@@ -10,10 +11,12 @@ function actualizarCostoTodosProductos(costosActuales, incrementoPorcentaje) {
     const nuevoCosto = costoActual * (1 + incrementoPorcentaje / 100);
     nuevosCostos[id] = nuevoCosto;
   });
+// console.log para ver los datos que se envían al servidor
+console.log('Datos que se envían al servidor:', { nuevosCostos });
 
   // Enviar los nuevos costos al servidor para actualizar la base de datos
-  console.log('URL de la solicitud:', window.location.origin + '/producto/actualizar-costo');
-  fetch('/producto/actualizar-costo', {
+  console.log('URL de la solicitud:', window.location.origin + '/actualizar-costos');
+  fetch('/actualizar-costos', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -39,6 +42,8 @@ function actualizarCostoTodosProductos(costosActuales, incrementoPorcentaje) {
     })
     .catch(error => {
       console.error('Error al actualizar el costo de los productos: ', error);
+      // Imprimir el error completo para obtener más detalles
+      console.log(error);
       Swal.fire({
         icon: 'error',
         title: 'Error',

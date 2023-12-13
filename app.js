@@ -18,6 +18,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+//middleware simple para imprimir las solicitudes y verificar qué ruta y método están llegando al servidor
+app.use((req, res, next) => {
+  console.log(`Solicitud recibida: ${req.method} ${req.url}`);
+  next();
+});
 
 // Configuración de la conexión a la base de datos
 const db = mysql.createConnection({
@@ -89,6 +94,7 @@ function obtenerConfiguracion() {
       return {};
   }
 }
+
 
 // Ruta para obtener el costo actual de todos los productos
 app.get('/producto/costo-actual', (req, res) => {
@@ -504,13 +510,22 @@ app.post('/confirmar-factura', async (req, res) => {
   }
 });
 
-/// Ruta para actualizar el costo de todos los productos
-app.put('/producto/actualizar-costo', (req, res) => {
+// Nueva ruta para actualizar costos
+app.put('/actualizar-costos', (req, res) => {
+  console.log('Solicitud PUT recibida en /actualizar-costos');
+  console.log('Cuerpo de la solicitud recibida:', req.body);
+
+  // Verificación de existencia del producto
+  if (!productoExiste) {
+    return res.status(404).json({ error: 'El producto no existe' });
+  }
+
+  // Obtén el cuerpo de la solicitud
   const nuevosCostos = req.body.nuevosCostos;
-  console.log("entramos a /producto/actualizar-costo");
 
   // Verifica que nuevosCostos sea un objeto no vacío
   if (!nuevosCostos || Object.keys(nuevosCostos).length === 0) {
+    console.error('Los nuevos costos no son válidos.');
     return res.status(400).json({ error: 'Los nuevos costos no son válidos.' });
   }
 
@@ -523,12 +538,50 @@ app.put('/producto/actualizar-costo', (req, res) => {
         // Puedes enviar una respuesta con el error si lo deseas
       } else {
         console.log(`Costo actualizado correctamente para el producto con ID ${id}`);
+
+        // Obtén valores del archivo de configuración (puedes leer esto al inicio de tu aplicación)
+        const configuracion = require('./config/configuracion.json');
+        const iva = 0.21; // Supongamos que el IVA es del 21%
+
+        // Calcula los nuevos precios de las listas
+        const nuevosPreciosListas = calcularPreciosListas(
+          costo,
+          iva,
+          configuracion.gananciaLista1,
+          configuracion.gananciaLista2,
+          configuracion.gananciaLista3,
+          configuracion.gananciaLista4
+        );
+
+        // Actualiza los precios de las listas en la base de datos (puedes adaptar esto según tu estructura)
+        db.query(
+          'UPDATE productos SET precioLista1 = ?, precioLista2 = ?, precioLista3 = ?, precioLista4 = ? WHERE id = ?',
+          [
+            nuevosPreciosListas.precioLista1,
+            nuevosPreciosListas.precioLista2,
+            nuevosPreciosListas.precioLista3,
+            nuevosPreciosListas.precioLista4,
+            id,
+          ],
+          (precioErr, precioResult) => {
+            if (precioErr) {
+              console.error(`Error al actualizar los precios de las listas: ${precioErr.message}`);
+              // Puedes enviar una respuesta con el error si lo deseas
+            } else {
+              console.log(`Precios de las listas actualizados correctamente para el producto con ID ${id}`);
+            }
+          }
+        );
       }
     });
   });
 
-  res.json({ message: 'Costos actualizados correctamente' });
+  console.log('Después de la actualización');
+
+  // Envía una respuesta
+  res.json({ message: 'Costos y precios de listas actualizados correctamente' });
 });
+
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
