@@ -63,13 +63,51 @@ function obtenerYMostrarValorDolar() {
     .then(configuracion => {
       const valorDolar = configuracion.valorDolar;
       const valorDolarActual = document.getElementById('valorDolarActual');
+
       if (valorDolarActual) {
         valorDolarActual.value = valorDolar;
-        // No es necesario llamar actualizarCostoProducto aquí
       }
     })
     .catch(error => {
       console.error('Error al obtener el valor del dólar desde configuracion.json: ', error);
+    });
+}
+
+// Nueva función para actualizar el valor del dólar en configuracion.json
+function actualizarValorDolarEnConfiguracion(nuevoValorDolar) {
+  // Obtén la configuración actual
+  fetch('/configuracion')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener la configuración');
+      }
+      return response.json();
+    })
+    .then(configuracion => {
+      // Actualiza el valor del dólar en la configuración
+      configuracion.valorDolar = nuevoValorDolar;
+
+      // Realiza la solicitud PUT para actualizar la configuración en el servidor
+      fetch('/configuracion', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(configuracion),
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error al actualizar la configuración: ${response.statusText}`);
+          }
+          // Vuelve a obtener y mostrar el valor del dólar después de la actualización
+          obtenerYMostrarValorDolar();
+        })
+        .catch(error => {
+          console.error('Error al actualizar la configuración: ', error);
+        });
+    })
+    .catch(error => {
+      console.error('Error al obtener la configuración: ', error);
     });
 }
 
@@ -99,6 +137,8 @@ function calcularDiferenciaYConfirmar() {
     cancelButtonText: 'Cancelar'
   }).then((result) => {
     if (result.isConfirmed) {
+      // Llama a la función para actualizar el valor del dólar en configuracion.json
+      actualizarValorDolarEnConfiguracion(nuevoValorDolar);
       // Obtener el costo actual antes de llamar a la función
       obtenerYActualizarCostoTodosProductos(diferenciaPorcentaje);
     }

@@ -24,6 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 // Configuración de la conexión a la base de datos
 const db = mysql.createConnection({
   host: 'localhost',
@@ -80,6 +81,8 @@ db.connect((err) => {
   });
 });
 
+// Importa el módulo precios.js que contiene las funciones necesarias
+const { calcularPreciosListas } = require('./public/js/precios');
 
 // función  para cargar la configuración
 function obtenerConfiguracion() {
@@ -515,10 +518,10 @@ app.put('/actualizar-costos', (req, res) => {
   console.log('Solicitud PUT recibida en /actualizar-costos');
   console.log('Cuerpo de la solicitud recibida:', req.body);
 
-  // Verificación de existencia del producto
-  if (!productoExiste) {
-    return res.status(404).json({ error: 'El producto no existe' });
-  }
+  // // Verificación de existencia del producto
+  // if (!productoExiste) {
+  //   return res.status(404).json({ error: 'El producto no existe' });
+  // }
 
   // Obtén el cuerpo de la solicitud
   const nuevosCostos = req.body.nuevosCostos;
@@ -539,39 +542,57 @@ app.put('/actualizar-costos', (req, res) => {
       } else {
         console.log(`Costo actualizado correctamente para el producto con ID ${id}`);
 
-        // Obtén valores del archivo de configuración (puedes leer esto al inicio de tu aplicación)
-        const configuracion = require('./config/configuracion.json');
-        const iva = 0.21; // Supongamos que el IVA es del 21%
+        // Lee el archivo de configuración de forma asíncrona
+        fs.readFile('./public/config/configuracion.json', 'utf8', (configErr, configData) => {
+          if (configErr) {
+            console.error(`Error al leer el archivo de configuración: ${configErr.message}`);
+            // Puedes enviar una respuesta con el error si lo deseas
+          } else {
+            const configuracion = JSON.parse(configData);
 
-        // Calcula los nuevos precios de las listas
-        const nuevosPreciosListas = calcularPreciosListas(
-          costo,
-          iva,
-          configuracion.gananciaLista1,
-          configuracion.gananciaLista2,
-          configuracion.gananciaLista3,
-          configuracion.gananciaLista4
-        );
+            // Obtén el IVA del producto desde la base de datos
+            db.query('SELECT iva FROM productos WHERE id = ?', [id], (ivaErr, ivaResult) => {
+              if (ivaErr) {
+                console.error(`Error al obtener el IVA del producto con ID ${id}: ${ivaErr.message}`);
+                // Puedes enviar una respuesta con el error si lo deseas
+              } else {
+                const iva = ivaResult[0] && ivaResult[0].iva ? ivaResult[0].iva : 0.21;
 
-        // Actualiza los precios de las listas en la base de datos (puedes adaptar esto según tu estructura)
-        db.query(
-          'UPDATE productos SET precioLista1 = ?, precioLista2 = ?, precioLista3 = ?, precioLista4 = ? WHERE id = ?',
-          [
-            nuevosPreciosListas.precioLista1,
-            nuevosPreciosListas.precioLista2,
-            nuevosPreciosListas.precioLista3,
-            nuevosPreciosListas.precioLista4,
-            id,
-          ],
-          (precioErr, precioResult) => {
-            if (precioErr) {
-              console.error(`Error al actualizar los precios de las listas: ${precioErr.message}`);
-              // Puedes enviar una respuesta con el error si lo deseas
-            } else {
-              console.log(`Precios de las listas actualizados correctamente para el producto con ID ${id}`);
-            }
+                // Calcula los nuevos precios de las listas
+                const nuevosPreciosListas = calcularPreciosListas(
+                  costo,
+                  iva,
+                  configuracion.gananciaLista1,
+                  configuracion.gananciaLista2,
+                  configuracion.gananciaLista3,
+                  configuracion.gananciaLista4
+                );
+
+                // Actualiza los precios de las listas en la base de datos (puedes adaptar esto según tu estructura)
+                db.query(
+                  'UPDATE productos SET precioLista1 = ?, precioLista2 = ?, precioLista3 = ?, precioLista4 = ? WHERE id = ?',
+                  [
+                    nuevosPreciosListas.precioLista1,
+                    nuevosPreciosListas.precioLista2,
+                    nuevosPreciosListas.precioLista3,
+                    nuevosPreciosListas.precioLista4,
+                    id,
+                  ],
+                  (precioErr, precioResult) => {
+                    if (precioErr) {
+                      console.error(`Error al actualizar los precios de las listas: ${precioErr.message}`);
+                      // Puedes enviar una respuesta con el error si lo deseas
+                    } else {
+                      console.log(
+                        `Precios de las listas actualizados correctamente para el producto con ID ${id}`
+                      );
+                    }
+                  }
+                );
+              }
+            });
           }
-        );
+        });
       }
     });
   });
@@ -581,7 +602,6 @@ app.put('/actualizar-costos', (req, res) => {
   // Envía una respuesta
   res.json({ message: 'Costos y precios de listas actualizados correctamente' });
 });
-
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
