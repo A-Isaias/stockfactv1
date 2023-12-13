@@ -9,8 +9,15 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 
+const corsOptions = {
+  origin: 'http://localhost:'+port,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(cors());
 
 // Configuración de la conexión a la base de datos
 const db = mysql.createConnection({
@@ -82,6 +89,38 @@ function obtenerConfiguracion() {
       return {};
   }
 }
+
+// Ruta para obtener el costo actual de todos los productos
+app.get('/producto/costo-actual', (req, res) => {
+  console.log('Entró a la ruta /producto/costo-actual');  // Agrega esta línea
+
+  db.query('SELECT id, costo FROM productos', (err, results) => {
+    if (err) {
+      console.error('Error al obtener el costo actual de los productos: ' + err.message);
+      res.status(500).json({ error: 'Error al obtener el costo actual de los productos' });
+      return;
+    }
+
+    // Filtrar resultados para eliminar registros con costo null (IDs borrados)
+    const productosConCosto = results.filter(producto => producto.costo !== null);
+
+    if (productosConCosto.length === 0) {
+      // Si no hay productos con costo, retornar un mensaje adecuado
+      res.status(404).json({ error: 'No hay productos con costo en la base de datos' });
+      return;
+    }
+
+    const productosCostoActual = {};
+
+    // Construir un objeto con los ID y costo actual de los productos
+    productosConCosto.forEach(producto => {
+      productosCostoActual[producto.id] = producto.costo;
+    });
+
+    res.json(productosCostoActual);
+  });
+});
+
 
 // Ruta para agregar un nuevo producto
 app.post('/producto', (req, res) => {
@@ -465,42 +504,31 @@ app.post('/confirmar-factura', async (req, res) => {
   }
 });
 
-// Ruta para actualizar el costo de todos los productos
+/// Ruta para actualizar el costo de todos los productos
 app.put('/producto/actualizar-costo', (req, res) => {
-  const nuevoCosto = req.body.nuevoCosto;
+  const nuevosCostos = req.body.nuevosCostos;
+  console.log("entramos a /producto/actualizar-costo");
 
-  if (isNaN(parseFloat(nuevoCosto))) {
-    return res.status(400).json({ error: 'Por favor, ingrese un número válido para el nuevo costo.' });
+  // Verifica que nuevosCostos sea un objeto no vacío
+  if (!nuevosCostos || Object.keys(nuevosCostos).length === 0) {
+    return res.status(400).json({ error: 'Los nuevos costos no son válidos.' });
   }
 
-  // Lógica para actualizar el costo de todos los productos en la base de datos
-  const sql = 'UPDATE productos SET costo = ?';
-
-  db.query(sql, [nuevoCosto], (err, results) => {
-    if (err) {
-      console.error('Error al actualizar el costo de los productos: ' + err.message);
-      return res.status(500).json({ error: 'Error al actualizar el costo de los productos' });
-    }
-
-    res.json({ message: 'Costo actualizado correctamente en todos los productos' });
+  // Itera sobre los nuevos costos y actualiza la base de datos
+  Object.entries(nuevosCostos).forEach(([id, costo]) => {
+    // Realiza la actualización en la base de datos
+    db.query('UPDATE productos SET costo = ? WHERE id = ?', [costo, id], (err, result) => {
+      if (err) {
+        console.error(`Error al actualizar el costo del producto con ID ${id}: ${err.message}`);
+        // Puedes enviar una respuesta con el error si lo deseas
+      } else {
+        console.log(`Costo actualizado correctamente para el producto con ID ${id}`);
+      }
+    });
   });
+
+  res.json({ message: 'Costos actualizados correctamente' });
 });
-
-// Ruta para obtener el costo actual de los productos
-// Ruta para obtener el costo actual de todos los productos
-app.get('/producto/costo-actual', (req, res) => {
-  // Realizar una consulta para obtener todos los costos actuales
-  db.query('SELECT id, costo FROM productos', (err, results) => {
-    if (err) {
-      console.error('Error al obtener el costo actual de los productos: ' + err.message);
-      res.status(500).json({ error: 'Error al obtener el costo actual de los productos' });
-      return;
-    }
-
-    res.json(results);
-  });
-});
-
 
 // Ruta para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));

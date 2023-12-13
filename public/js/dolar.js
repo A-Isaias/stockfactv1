@@ -1,6 +1,51 @@
 document.addEventListener('DOMContentLoaded', function () {
   obtenerYMostrarValorDolar();
 });
+function actualizarCostoTodosProductos(costosActuales, incrementoPorcentaje) {
+  const nuevosCostos = {};
+
+  // Calcular los nuevos costos según el porcentaje de incremento
+  Object.keys(costosActuales).forEach(id => {
+    const costoActual = costosActuales[id];
+    const nuevoCosto = costoActual * (1 + incrementoPorcentaje / 100);
+    nuevosCostos[id] = nuevoCosto;
+  });
+
+  // Enviar los nuevos costos al servidor para actualizar la base de datos
+  console.log('URL de la solicitud:', window.location.origin + '/producto/actualizar-costo');
+  fetch('/producto/actualizar-costo', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      nuevosCostos: nuevosCostos,
+    }),
+  })
+    .then(response => {
+      if (!response.ok) {
+        console.log (nuevosCostos)
+        throw new Error(`Error al actualizar el costo de los productos: ${response.statusText}`);
+        
+      }
+      return response.json();
+    })
+    .then(data => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'Costo actualizado en todos los productos correctamente.'
+      });
+    })
+    .catch(error => {
+      console.error('Error al actualizar el costo de los productos: ', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al actualizar el costo de los productos.'
+      });
+    });
+}
 
 function obtenerYMostrarValorDolar() {
   fetch('/configuracion')
@@ -56,7 +101,8 @@ function calcularDiferenciaYConfirmar() {
 }
 
 // Función para obtener el costo actual antes del aumento y luego actualizar todos los productos
-function obtenerYActualizarCostoTodosProductos() {
+function obtenerYActualizarCostoTodosProductos(incrementoPorcentaje) {
+  // Obtener el costo actual antes de llamar a la función
   fetch('/producto/costo-actual')
     .then(response => {
       if (!response.ok) {
@@ -65,45 +111,20 @@ function obtenerYActualizarCostoTodosProductos() {
       return response.json();
     })
     .then(data => {
-      // Aquí puedes manejar la respuesta, que incluirá los id y costos actuales de todos los productos
-      console.log('Costos actuales de los productos:', data);
+      // Verificar si se obtuvo la respuesta esperada
+      if (data && typeof data === 'object') {
+        // Llamar a la función para actualizar los costos
+        actualizarCostoTodosProductos(data, incrementoPorcentaje);
+      } else {
+        throw new Error('Respuesta inesperada al obtener el costo actual de los productos');
+      }
     })
     .catch(error => {
       console.error('Error al obtener el costo actual de los productos: ', error);
-    });
-}
-
-function actualizarCostoTodosProductos(costoActual, incrementoPorcentaje) {
-  const nuevoCosto = costoActual + (costoActual * incrementoPorcentaje / 100);
-
-  fetch('/producto/actualizar-costo', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      costo: nuevoCosto,
-    }),
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Error al actualizar el costo de los productos: ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: 'Costo actualizado en todos los productos correctamente.'
-      });
-    })
-    .catch(error => {
-      console.error('Error al actualizar el costo de los productos: ', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Hubo un problema al actualizar el costo de los productos.'
+        text: 'Hubo un problema al obtener el costo actual de los productos.'
       });
     });
 }
